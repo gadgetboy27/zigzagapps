@@ -32,6 +32,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Configure trust proxy for rate limiting in production
   app.set('trust proxy', 1);
   
+  // CORS configuration for Netlify deployment
+  app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    const allowedOrigins = [
+      'http://localhost:5173', // Vite dev server
+      'http://localhost:4173', // Vite preview
+      'http://localhost:5000', // Local production
+    ];
+    
+    // Add Netlify domains from environment variable
+    const netlifyDomains = process.env.ALLOWED_NETLIFY_ORIGINS?.split(',') || [];
+    allowedOrigins.push(...netlifyDomains);
+    
+    if (origin && allowedOrigins.includes(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+    }
+    
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    
+    if (req.method === 'OPTIONS') {
+      res.status(200).end();
+      return;
+    }
+    
+    next();
+  });
+  
   // Security middleware
   app.use(helmet({
     contentSecurityPolicy: {

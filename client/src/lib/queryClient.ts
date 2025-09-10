@@ -18,7 +18,8 @@ export async function apiRequest(
   data?: unknown | undefined,
 ): Promise<Response> {
   const baseUrl = getApiBaseUrl();
-  const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
+  const fullUrl = url.startsWith('http') ? url : 
+    baseUrl.replace(/\/$/, '') + '/' + url.replace(/^\//, '');
   
   const res = await fetch(fullUrl, {
     method,
@@ -39,7 +40,8 @@ export const getQueryFn: <T>(options: {
   async ({ queryKey }) => {
     const baseUrl = getApiBaseUrl();
     const url = queryKey.join("/") as string;
-    const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
+    const fullUrl = url.startsWith('http') ? url : 
+      baseUrl.replace(/\/$/, '') + '/' + url.replace(/^\//, '');
     
     const res = await fetch(fullUrl, {
       credentials: "include",
