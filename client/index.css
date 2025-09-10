@@ -5,7 +5,32 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+:root.light {
+  --background: hsl(0, 0%, 98%);
+  --foreground: hsl(0, 0%, 8%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(0, 0%, 8%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(0, 0%, 8%);
+  --primary: hsl(193, 100%, 50%);
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsl(18, 100%, 60%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --muted: hsl(0, 0%, 95%);
+  --muted-foreground: hsl(0, 0%, 45%);
+  --accent: hsl(140, 100%, 50%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 85%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --border: hsl(0, 0%, 85%);
+  --input: hsl(0, 0%, 85%);
+  --ring: hsl(193, 100%, 50%);
+  --radius: 0.75rem;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
+}
+
+:root.dark {
   --background: hsl(0, 0%, 4%);
   --foreground: hsl(0, 0%, 98%);
   --card: hsl(0, 0%, 8%);
@@ -30,7 +55,33 @@
   --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
 }
 
-.dark {
+:root.blue {
+  --background: hsl(210, 100%, 97%);
+  --foreground: hsl(210, 50%, 8%);
+  --card: hsl(210, 100%, 99%);
+  --card-foreground: hsl(210, 50%, 8%);
+  --popover: hsl(210, 100%, 99%);
+  --popover-foreground: hsl(210, 50%, 8%);
+  --primary: hsl(210, 100%, 50%);
+  --primary-foreground: hsl(210, 100%, 97%);
+  --secondary: hsl(190, 80%, 60%);
+  --secondary-foreground: hsl(210, 100%, 97%);
+  --muted: hsl(210, 60%, 94%);
+  --muted-foreground: hsl(210, 25%, 45%);
+  --accent: hsl(220, 80%, 70%);
+  --accent-foreground: hsl(210, 100%, 97%);
+  --destructive: hsl(0, 85%, 60%);
+  --destructive-foreground: hsl(210, 100%, 97%);
+  --border: hsl(210, 50%, 85%);
+  --input: hsl(210, 50%, 85%);
+  --ring: hsl(210, 100%, 50%);
+  --radius: 0.75rem;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
+}
+
+/* Default to dark theme if no class is applied */
+:root {
   --background: hsl(0, 0%, 4%);
   --foreground: hsl(0, 0%, 98%);
   --card: hsl(0, 0%, 8%);
@@ -50,6 +101,9 @@
   --border: hsl(0, 0%, 15%);
   --input: hsl(0, 0%, 15%);
   --ring: hsl(193, 100%, 50%);
+  --radius: 0.75rem;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
 }
 
 @layer base {
@@ -229,5 +283,31 @@
     50% { 
       transform: translateY(-20px) rotate(180deg); 
     }
+  }
+
+  /* Smooth typing effect for letters */
+  .letter-fade-in {
+    animation: letterFadeIn 0.2s ease-out forwards;
+  }
+
+  @keyframes letterFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Smoother typing cursor animation */
+  .typing-cursor {
+    animation: typingCursor 1s ease-in-out infinite;
+  }
+
+  @keyframes typingCursor {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.3; }
   }
 }

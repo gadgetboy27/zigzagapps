@@ -15,7 +15,7 @@ export default function HeroSection() {
         } else {
           clearInterval(timer);
         }
-      }, 150);
+      }, 120); // Reduced from 150ms to 120ms for smoother effect
       return timer;
     };
 
@@ -63,7 +63,7 @@ export default function HeroSection() {
             <span className="text-gradient bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
               {displayedText}
             </span>
-            <span className="animate-pulse text-primary">|</span>
+            <span className="typing-cursor text-primary">|</span>
           </h1>
           
           {/* Subtitle with name */}

@@ -49,14 +49,14 @@ export default function AnimatedHeader({
           clearInterval(timer);
           setHasAnimated(true);
         }
-      }, 100);
+      }, 80); // Reduced from 100ms to 80ms for smoother effect
       return timer;
     };
 
     // Start typing after a small delay
     const timeoutId = setTimeout(() => {
       startTyping();
-    }, 500);
+    }, 300); // Reduced from 500ms to 300ms for faster start
 
     return () => clearTimeout(timeoutId);
   }, [isVisible, text, hasAnimated]);
@@ -68,7 +68,7 @@ export default function AnimatedHeader({
       data-testid={dataTestId}
     >
       {hasAnimated ? text : displayedText}
-      {!hasAnimated && isVisible && <span className="animate-pulse text-primary">|</span>}
+      {!hasAnimated && isVisible && <span className="typing-cursor text-primary">|</span>}
     </h2>
   );
 }
