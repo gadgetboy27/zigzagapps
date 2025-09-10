@@ -11,11 +11,11 @@ import ContactSection from "@/components/contact-section";
 export default function Home() {
   useEffect(() => {
     // SEO and document setup
-    document.title = "Henry Peti - Modern App Developer & Entrepreneur | Portfolio & App Store";
+    document.title = "ZIGZAG APPS - Henry Peti | Modern App Developer & Entrepreneur | Portfolio & App Store";
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Henry Peti - Software Engineer, App Developer & Entrepreneur. Discover cutting-edge mobile apps, web applications, and digital solutions. Buy premium apps and explore innovative development projects.');
+      metaDescription.setAttribute('content', 'ZIGZAG APPS by Henry Peti - Software Engineer, App Developer & Entrepreneur. Discover cutting-edge mobile apps, web applications, and digital solutions. Buy premium apps and explore innovative development projects.');
     }
   }, []);
 
@@ -28,7 +28,9 @@ export default function Home() {
       <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-background/80 border-b border-border">
         <nav className="container mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
-            <div className="text-xl font-bold text-primary font-mono" data-testid="logo">HP</div>
+            <div className="text-xl font-bold text-primary font-mono" data-testid="logo">
+              <span className="text-gradient">ZZ</span>
+            </div>
             <div className="hidden md:flex space-x-8">
               <a href="#about" className="hover:text-primary transition-colors" data-testid="nav-about">About</a>
               <a href="#apps" className="hover:text-primary transition-colors" data-testid="nav-apps">Apps</a>
@@ -58,7 +60,7 @@ export default function Home() {
       <footer className="py-12 border-t border-border">
         <div className="container mx-auto px-6">
           <div className="text-center">
-            <div className="text-2xl font-bold text-primary font-mono mb-4">HP</div>
+            <div className="text-2xl font-bold text-gradient font-mono mb-4">ZIGZAG APPS</div>
             <p className="text-muted-foreground mb-6">Building the future, one app at a time.</p>
             <div className="flex justify-center space-x-6 mb-6">
               <a href="#apps" className="text-muted-foreground hover:text-primary transition-colors">Apps</a>
