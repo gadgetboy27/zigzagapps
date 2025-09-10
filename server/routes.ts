@@ -29,6 +29,9 @@ const transporter = process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
+  // Configure trust proxy for rate limiting in production
+  app.set('trust proxy', 1);
+  
   // Security middleware
   app.use(helmet({
     contentSecurityPolicy: {
@@ -36,9 +39,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         defaultSrc: ["'self'"],
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
         fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "https://js.stripe.com"],
+        frameSrc: ["'self'", "https://js.stripe.com", "https://hooks.stripe.com"],
         imgSrc: ["'self'", "data:", "https:", "blob:"],
-        connectSrc: ["'self'", "ws:", "wss:"],
+        connectSrc: ["'self'", "ws:", "wss:", "https://api.stripe.com"],
       },
     },
   }));
