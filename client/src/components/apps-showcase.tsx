@@ -54,8 +54,12 @@ export default function AppsShowcase() {
   }
 
   return (
-    <section id="apps" className="min-h-screen py-20 snap-section">
-      <div className="container mx-auto px-6">
+    <section id="apps" className="min-h-screen py-20 snap-section apple-scroll-section relative overflow-hidden">
+      {/* Gradient background */}
+      <div className="absolute inset-0 gradient-parallax-1 opacity-20"></div>
+      {/* Coding overlay */}
+      <div className="absolute inset-0 coding-overlay"></div>
+      <div className="container mx-auto px-6 relative z-10">
         <AnimatedHeader 
           text="MY APPS" 
           className="text-5xl md:text-6xl font-black mb-16 text-center text-primary"

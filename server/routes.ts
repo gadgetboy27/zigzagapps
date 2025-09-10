@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import Stripe from "stripe";
 import express from "express";
+import nodemailer from "nodemailer";
 import { storage } from "./storage";
 import { insertContactSchema, insertPurchaseSchema } from "@shared/schema";
 import { z } from "zod";
@@ -9,6 +10,17 @@ import { z } from "zod";
 const stripe = process.env.STRIPE_SECRET_KEY 
   ? new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: "2025-08-27.basil",
+    })
+  : null;
+
+// Gmail transporter setup
+const transporter = process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD 
+  ? nodemailer.createTransporter({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD,
+      },
     })
   : null;
 
@@ -59,8 +71,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const contactData = insertContactSchema.parse(req.body);
       const contact = await storage.createContactSubmission(contactData);
       
-      // TODO: Send email notification via Gmail API
-      console.log("New contact submission:", contact);
+      // Send email notification via Gmail
+      if (transporter) {
+        try {
+          await transporter.sendMail({
+            from: process.env.GMAIL_USER,
+            to: process.env.GMAIL_USER, // Send to yourself
+            subject: `New Contact Form Submission - ${contact.projectType || 'General Inquiry'}`,
+            html: `
+              <h2>New Contact Form Submission</h2>
+              <p><strong>Name:</strong> ${contact.name}</p>
+              <p><strong>Email:</strong> ${contact.email}</p>
+              <p><strong>Project Type:</strong> ${contact.projectType || 'Not specified'}</p>
+              <p><strong>Budget:</strong> ${contact.budget || 'Not specified'}</p>
+              <p><strong>Message:</strong></p>
+              <div style="background: #f5f5f5; padding: 15px; border-left: 4px solid #007acc; margin: 15px 0;">
+                ${contact.message.replace(/\n/g, '<br>')}
+              </div>
+              <p><strong>Submitted:</strong> ${new Date(contact.createdAt || new Date()).toLocaleString()}</p>
+              <hr>
+              <p style="color: #666; font-size: 12px;">
+                This email was sent from your ZIGZAG APPS portfolio contact form.
+              </p>
+            `,
+          });
+          console.log("Contact notification email sent successfully");
+        } catch (emailError) {
+          console.error("Failed to send contact notification email:", emailError);
+          // Don't fail the request if email fails
+        }
+      }
       
       res.json({ message: "Contact form submitted successfully" });
     } catch (error) {

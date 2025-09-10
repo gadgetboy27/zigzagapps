@@ -107,6 +107,49 @@
       background: linear-gradient(45deg, var(--accent), var(--primary), var(--secondary));
     }
   }
+
+  /* Gradient parallax backgrounds */
+  .gradient-parallax-1 {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    background-size: 200% 200%;
+    animation: gradient-flow 8s ease infinite;
+  }
+
+  .gradient-parallax-2 {
+    background: linear-gradient(45deg, var(--secondary) 0%, var(--accent) 100%);
+    background-size: 200% 200%;
+    animation: gradient-flow 10s ease infinite reverse;
+  }
+
+  .gradient-parallax-3 {
+    background: linear-gradient(225deg, var(--accent) 0%, var(--primary) 100%);
+    background-size: 200% 200%;
+    animation: gradient-flow 12s ease infinite;
+  }
+
+  @keyframes gradient-flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Smooth Apple-style scroll effects */
+  .apple-scroll-section {
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .apple-scroll-section:hover {
+    transform: translateY(-8px);
+  }
+
+  /* Coding background overlay */
+  .coding-overlay {
+    background-image: url('https://images.unsplash.com/photo-1516259762381-22954d7d3ad2?auto=format&fit=crop&w=1920&h=1080');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.05;
+    background-attachment: fixed;
+  }
   
   .app-card {
     transition: all 0.3s ease;
