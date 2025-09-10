@@ -15,7 +15,7 @@ const stripe = process.env.STRIPE_SECRET_KEY
 
 // Gmail transporter setup
 const transporter = process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD 
-  ? nodemailer.createTransporter({
+  ? nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: process.env.GMAIL_USER,
