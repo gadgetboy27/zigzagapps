@@ -18,6 +18,8 @@ export default function ContactSection() {
     projectType: "",
     budget: "",
     message: "",
+    // Honeypot field (hidden from users, catches bots)
+    website: "",
   });
 
   const contactMutation = useMutation({
@@ -32,6 +34,7 @@ export default function ContactSection() {
         projectType: "",
         budget: "",
         message: "",
+        website: "",
       });
     },
     onError: (error) => {
@@ -213,8 +216,23 @@ export default function ContactSection() {
                     placeholder="Tell me about your project..."
                     className="bg-input border-border resize-none"
                     data-testid="textarea-message"
+                    maxLength={2000}
                   />
+                  <div className="text-xs text-muted-foreground mt-1">
+                    {formData.message.length}/2000 characters
+                  </div>
                 </div>
+
+                {/* Honeypot field - hidden from users */}
+                <input
+                  type="text"
+                  name="website"
+                  value={formData.website}
+                  onChange={(e) => handleInputChange("website", e.target.value)}
+                  style={{ display: 'none' }}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
                 
                 <Button 
                   type="submit" 

@@ -3,6 +3,9 @@ import { createServer, type Server } from "http";
 import Stripe from "stripe";
 import express from "express";
 import nodemailer from "nodemailer";
+import rateLimit from "express-rate-limit";
+import helmet from "helmet";
+import validator from "validator";
 import { storage } from "./storage";
 import { insertContactSchema, insertPurchaseSchema } from "@shared/schema";
 import { z } from "zod";
@@ -25,6 +28,45 @@ const transporter = process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD
   : null;
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  
+  // Security middleware
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "https:", "blob:"],
+        connectSrc: ["'self'", "ws:", "wss:"],
+      },
+    },
+  }));
+
+  // Rate limiting for contact form
+  const contactLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // Limit each IP to 5 contact form submissions per windowMs
+    message: {
+      error: "Too many contact form submissions, please try again later."
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  // General API rate limiter
+  const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: {
+      error: "Too many requests, please try again later."
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  // Apply rate limiting to all API routes
+  app.use('/api/', apiLimiter);
   
   // Get all apps
   app.get("/api/apps", async (req, res) => {
@@ -65,11 +107,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Submit contact form
-  app.post("/api/contact", async (req, res) => {
+  // Submit contact form with security measures
+  app.post("/api/contact", contactLimiter, async (req, res) => {
     try {
-      const contactData = insertContactSchema.parse(req.body);
-      const contact = await storage.createContactSubmission(contactData);
+      // Check for honeypot field (bot detection)
+      if (req.body.website || req.body.url) {
+        return res.status(400).json({ message: "Invalid form submission" });
+      }
+
+      // Enhanced validation with sanitization
+      const contactData = {
+        name: validator.escape(req.body.name || '').trim(),
+        email: validator.normalizeEmail(req.body.email || '') || '',
+        projectType: validator.escape(req.body.projectType || '').trim(),
+        budget: validator.escape(req.body.budget || '').trim(),
+        message: validator.escape(req.body.message || '').trim(),
+      };
+
+      // Additional validation
+      if (!contactData.name || contactData.name.length < 2 || contactData.name.length > 100) {
+        return res.status(400).json({ message: "Name must be between 2 and 100 characters" });
+      }
+      
+      if (!validator.isEmail(contactData.email)) {
+        return res.status(400).json({ message: "Please provide a valid email address" });
+      }
+      
+      if (!contactData.message || contactData.message.length < 10 || contactData.message.length > 2000) {
+        return res.status(400).json({ message: "Message must be between 10 and 2000 characters" });
+      }
+
+      // Parse with our schema for final validation
+      const validatedData = insertContactSchema.parse(contactData);
+      const contact = await storage.createContactSubmission(validatedData);
       
       // Send email notification via Gmail
       if (transporter) {
