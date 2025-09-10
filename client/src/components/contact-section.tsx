@@ -6,9 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import AnimatedHeader from "./animated-header";
+import ContactModal from "./contact-modal";
 
 export default function ContactSection() {
   const { toast } = useToast();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -22,10 +25,7 @@ export default function ContactSection() {
       await apiRequest("POST", "/api/contact", data);
     },
     onSuccess: () => {
-      toast({
-        title: "Message Sent!",
-        description: "Thank you for your message! I will get back to you soon.",
-      });
+      setIsModalOpen(true);
       setFormData({
         name: "",
         email: "",
@@ -56,9 +56,11 @@ export default function ContactSection() {
     <section id="contact" className="min-h-screen py-20 snap-section">
       <div className="container mx-auto px-6">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-5xl md:text-6xl font-black mb-16 text-center text-primary" data-testid="contact-title">
-            GET IN TOUCH
-          </h2>
+          <AnimatedHeader 
+            text="GET IN TOUCH" 
+            className="text-5xl md:text-6xl font-black mb-16 text-center text-primary"
+            data-testid="contact-title"
+          />
           
           <div className="grid lg:grid-cols-2 gap-16">
             {/* Contact Info */}
@@ -227,6 +229,11 @@ export default function ContactSection() {
             </div>
           </div>
         </div>
+        
+        <ContactModal 
+          isOpen={isModalOpen} 
+          onClose={() => setIsModalOpen(false)} 
+        />
       </div>
     </section>
   );

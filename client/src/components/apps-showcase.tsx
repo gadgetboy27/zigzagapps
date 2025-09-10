@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { App } from "@shared/schema";
+import AnimatedHeader from "./animated-header";
 
 export default function AppsShowcase() {
   const [activeFilter, setActiveFilter] = useState("all");
@@ -24,7 +25,10 @@ export default function AppsShowcase() {
     return (
       <section id="apps" className="min-h-screen py-20 snap-section">
         <div className="container mx-auto px-6">
-          <h2 className="text-5xl md:text-6xl font-black mb-16 text-center text-primary">MY APPS</h2>
+          <AnimatedHeader 
+            text="MY APPS" 
+            className="text-5xl md:text-6xl font-black mb-16 text-center text-primary"
+          />
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="bg-card rounded-2xl overflow-hidden brutalist-shadow animate-pulse">
@@ -52,7 +56,11 @@ export default function AppsShowcase() {
   return (
     <section id="apps" className="min-h-screen py-20 snap-section">
       <div className="container mx-auto px-6">
-        <h2 className="text-5xl md:text-6xl font-black mb-16 text-center text-primary" data-testid="apps-title">MY APPS</h2>
+        <AnimatedHeader 
+          text="MY APPS" 
+          className="text-5xl md:text-6xl font-black mb-16 text-center text-primary"
+          data-testid="apps-title"
+        />
         
         {/* Filter Buttons */}
         <div className="flex flex-wrap justify-center gap-4 mb-12">

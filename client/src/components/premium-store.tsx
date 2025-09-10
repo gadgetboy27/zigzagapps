@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import type { App } from "@shared/schema";
+import AnimatedHeader from "./animated-header";
 
 export default function PremiumStore() {
   const { data: premiumApps = [], isLoading } = useQuery<App[]>({
@@ -13,7 +14,10 @@ export default function PremiumStore() {
       <section id="store" className="min-h-screen py-20 snap-section bg-muted/20">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-5xl md:text-6xl font-black mb-6 text-secondary">PREMIUM STORE</h2>
+            <AnimatedHeader 
+              text="ZIGZAG STORE" 
+              className="text-5xl md:text-6xl font-black mb-6 text-secondary"
+            />
             <div className="h-4 bg-muted rounded max-w-2xl mx-auto"></div>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -42,7 +46,11 @@ export default function PremiumStore() {
     <section id="store" className="min-h-screen py-20 snap-section bg-muted/20">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-5xl md:text-6xl font-black mb-6 text-secondary" data-testid="store-title">PREMIUM STORE</h2>
+          <AnimatedHeader 
+            text="ZIGZAG STORE" 
+            className="text-5xl md:text-6xl font-black mb-6 text-secondary"
+            data-testid="store-title"
+          />
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto" data-testid="store-description">
             Get exclusive access to premium applications with advanced features, priority support, and lifetime updates.
           </p>

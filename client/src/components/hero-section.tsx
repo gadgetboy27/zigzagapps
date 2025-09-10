@@ -5,17 +5,32 @@ export default function HeroSection() {
   const fullText = "ZIGZAG APPS";
   
   useEffect(() => {
-    let currentIndex = 0;
-    const timer = setInterval(() => {
-      if (currentIndex <= fullText.length) {
-        setDisplayedText(fullText.slice(0, currentIndex));
-        currentIndex++;
-      } else {
-        clearInterval(timer);
-      }
-    }, 150); // Adjust speed here
+    const startTyping = () => {
+      setDisplayedText("");
+      let currentIndex = 0;
+      const timer = setInterval(() => {
+        if (currentIndex <= fullText.length) {
+          setDisplayedText(fullText.slice(0, currentIndex));
+          currentIndex++;
+        } else {
+          clearInterval(timer);
+        }
+      }, 150);
+      return timer;
+    };
 
-    return () => clearInterval(timer);
+    // Start immediately
+    const initialTimer = startTyping();
+    
+    // Repeat every 10 seconds
+    const repeatTimer = setInterval(() => {
+      startTyping();
+    }, 10000);
+
+    return () => {
+      clearInterval(initialTimer);
+      clearInterval(repeatTimer);
+    };
   }, []);
 
   return (
