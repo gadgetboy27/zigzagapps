@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import type { Testimonial } from "@shared/schema";
+import AnimatedHeader from "@/components/animated-header";
 
 export default function Testimonials() {
   const { data: testimonials = [], isLoading } = useQuery<Testimonial[]>({
@@ -10,7 +11,11 @@ export default function Testimonials() {
     return (
       <section id="testimonials" className="min-h-screen py-20 snap-section">
         <div className="container mx-auto px-6">
-          <h2 className="text-5xl md:text-6xl font-black mb-16 text-center text-primary">TESTIMONIALS</h2>
+          <AnimatedHeader 
+            text="TESTIMONIALS" 
+            className="text-4xl md:text-5xl lg:text-6xl font-black mb-16 text-center text-primary w-full"
+            data-testid="testimonials-title"
+          />
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3].map((i) => (
               <div key={i} className="bg-card p-8 rounded-2xl brutalist-shadow animate-pulse">
@@ -81,9 +86,11 @@ export default function Testimonials() {
   return (
     <section id="testimonials" className="min-h-screen py-20 snap-section">
       <div className="container mx-auto px-6">
-        <h2 className="text-5xl md:text-6xl font-black mb-16 text-center text-primary" data-testid="testimonials-title">
-          TESTIMONIALS
-        </h2>
+        <AnimatedHeader 
+          text="TESTIMONIALS" 
+          className="text-4xl md:text-5xl lg:text-6xl font-black mb-16 text-center text-primary w-full"
+          data-testid="testimonials-title"
+        />
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {displayTestimonials.map((testimonial) => (
