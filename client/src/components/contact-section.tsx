@@ -142,11 +142,13 @@ export default function ContactSection() {
                     <i className="fab fa-linkedin"></i>
                   </a>
                   <a 
-                    href="https://twitter.com/henrypeti" 
+                    href="https://wa.me/64218535579" 
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
-                    data-testid="social-twitter"
+                    data-testid="social-whatsapp"
                   >
-                    <i className="fab fa-twitter"></i>
+                    <i className="fab fa-whatsapp"></i>
                   </a>
                   <a 
                     href="https://instagram.com/henrypeti.dev" 
