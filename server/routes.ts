@@ -198,7 +198,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
               </p>
             `,
           });
-          console.log("Contact notification email sent successfully");
         } catch (emailError) {
           console.error("Failed to send contact notification email:", emailError);
           // Don't fail the request if email fails
@@ -289,7 +288,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       event = stripe.webhooks.constructEvent(req.body, sig as string, process.env.STRIPE_WEBHOOK_SECRET);
     } catch (err: any) {
-      console.log(`Webhook signature verification failed.`, err.message);
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
@@ -301,7 +299,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const purchase = await storage.getPurchaseByPaymentIntent(paymentIntent.id);
         if (purchase) {
           await storage.updatePurchaseStatus(purchase.id, "completed");
-          console.log(`Payment completed for purchase: ${purchase.id}`);
           
           // TODO: Send purchase confirmation email
           // TODO: Provide app download/access instructions
@@ -319,7 +316,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const purchase = await storage.getPurchaseByPaymentIntent(paymentIntent.id);
         if (purchase) {
           await storage.updatePurchaseStatus(purchase.id, "failed");
-          console.log(`Payment failed for purchase: ${purchase.id}`);
         }
       } catch (error) {
         console.error("Error updating failed purchase status:", error);

@@ -16,7 +16,6 @@ export async function sendContactEmail(data: ContactFormData): Promise<void> {
   // 3. Mailgun
   // 4. Other email service
   
-  console.log("Sending contact email:", data);
   
   // TODO: Implement actual email sending
   // For now, this is handled by the backend API endpoint
