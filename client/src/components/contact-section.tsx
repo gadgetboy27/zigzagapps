@@ -78,25 +78,33 @@ export default function ContactSection() {
               </p>
               
               <div className="space-y-6">
-                <div className="flex items-center" data-testid="contact-email">
-                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mr-4">
+                <a 
+                  href="mailto:henrypeti.dev@gmail.com"
+                  className="flex items-center hover:bg-muted/50 p-2 rounded-lg transition-colors group"
+                  data-testid="contact-email"
+                >
+                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mr-4 group-hover:bg-primary/80 transition-colors">
                     <i className="fas fa-envelope text-primary-foreground"></i>
                   </div>
                   <div>
-                    <h4 className="font-bold text-foreground">Email</h4>
-                    <p className="text-muted-foreground">henrypeti.dev@gmail.com</p>
+                    <h4 className="font-bold text-foreground group-hover:text-primary transition-colors">Email</h4>
+                    <p className="text-muted-foreground group-hover:text-foreground transition-colors">henrypeti.dev@gmail.com</p>
                   </div>
-                </div>
+                </a>
                 
-                <div className="flex items-center" data-testid="contact-phone">
-                  <div className="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center mr-4">
+                <a 
+                  href="tel:+64218535579"
+                  className="flex items-center hover:bg-muted/50 p-2 rounded-lg transition-colors group"
+                  data-testid="contact-phone"
+                >
+                  <div className="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center mr-4 group-hover:bg-secondary/80 transition-colors">
                     <i className="fas fa-phone text-secondary-foreground"></i>
                   </div>
                   <div>
-                    <h4 className="font-bold text-foreground">Phone</h4>
-                    <p className="text-muted-foreground">021 853579</p>
+                    <h4 className="font-bold text-foreground group-hover:text-primary transition-colors">Phone</h4>
+                    <p className="text-muted-foreground group-hover:text-foreground transition-colors">021 853579</p>
                   </div>
-                </div>
+                </a>
                 
                 <a 
                   href="https://maps.google.com/maps?q=21/3+Inanga+Street,+Hobsonville,+Auckland+NZ"
