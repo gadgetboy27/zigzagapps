@@ -155,6 +155,13 @@ export default function ContactSection() {
                   >
                     <i className="fab fa-instagram"></i>
                   </a>
+                  <a 
+                    href="https://facebook.com/ZIGZAGAPPS" 
+                    className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
+                    data-testid="social-facebook"
+                  >
+                    <i className="fab fa-facebook"></i>
+                  </a>
                 </div>
               </div>
             </div>
