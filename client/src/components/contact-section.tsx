@@ -94,19 +94,25 @@ export default function ContactSection() {
                   </div>
                   <div>
                     <h4 className="font-bold text-foreground">Phone</h4>
-                    <p className="text-muted-foreground">+1 (555) 123-4567</p>
+                    <p className="text-muted-foreground">021 853579</p>
                   </div>
                 </div>
                 
-                <div className="flex items-center" data-testid="contact-location">
-                  <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center mr-4">
+                <a 
+                  href="https://maps.google.com/maps?q=21/3+Inanga+Street,+Hobsonville,+Auckland+NZ"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center hover:bg-muted/50 p-2 rounded-lg transition-colors group"
+                  data-testid="contact-location"
+                >
+                  <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center mr-4 group-hover:bg-accent/80 transition-colors">
                     <i className="fas fa-map-marker-alt text-accent-foreground"></i>
                   </div>
                   <div>
-                    <h4 className="font-bold text-foreground">Location</h4>
-                    <p className="text-muted-foreground">San Francisco, CA</p>
+                    <h4 className="font-bold text-foreground group-hover:text-primary transition-colors">Location</h4>
+                    <p className="text-muted-foreground group-hover:text-foreground transition-colors">21/3 Inanga Street, Hobsonville, Auckland NZ</p>
                   </div>
-                </div>
+                </a>
               </div>
               
               {/* Social Links */}

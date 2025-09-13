@@ -154,8 +154,8 @@ export default function TermsOfService() {
               </p>
               <div className="mt-4 text-muted-foreground">
                 <p><strong>Email:</strong> henrypeti.dev@gmail.com</p>
-                <p><strong>Phone:</strong> +1 (555) 123-4567</p>
-                <p><strong>Address:</strong> San Francisco, CA</p>
+                <p><strong>Phone:</strong> 021 853579</p>
+                <p><strong>Address:</strong> 21/3 Inanga Street, Hobsonville, Auckland NZ</p>
               </div>
             </section>
           </div>
