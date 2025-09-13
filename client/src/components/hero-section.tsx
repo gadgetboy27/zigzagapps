@@ -34,7 +34,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section id="hero" className="min-h-screen flex items-center justify-center snap-section relative overflow-hidden">
+    <section id="hero" className="min-h-screen flex items-center justify-center snap-section relative overflow-hidden pt-20">
       {/* Background Video */}
       <div className="absolute inset-0 w-full h-full">
         <video 

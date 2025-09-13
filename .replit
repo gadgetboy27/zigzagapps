@@ -40,3 +40,11 @@ integrations = ["javascript_object_storage:1.0.0", "javascript_stripe:1.0.0", "j
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 34305
+externalPort = 3001
+
+[[ports]]
+localPort = 35691
+externalPort = 3000
