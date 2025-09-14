@@ -3,7 +3,15 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
-app.use(express.json());
+
+// Apply JSON parsing middleware conditionally - exclude Stripe webhook
+app.use((req, res, next) => {
+  if (req.path === '/api/webhook/stripe') {
+    next(); // Skip JSON parsing for Stripe webhook
+  } else {
+    express.json()(req, res, next);
+  }
+});
 app.use(express.urlencoded({ extended: false }));
 
 app.use((req, res, next) => {

@@ -68,7 +68,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         defaultSrc: ["'self'"],
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
         fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "https://js.stripe.com"],
+        scriptSrc: ["'self'", "https://js.stripe.com"],
         frameSrc: ["'self'", "https://js.stripe.com", "https://hooks.stripe.com"],
         imgSrc: ["'self'", "data:", "https:", "blob:"],
         connectSrc: ["'self'", "ws:", "wss:", "https://api.stripe.com"],
@@ -87,10 +87,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     legacyHeaders: false,
   });
 
-  // General API rate limiter
+  // Health check endpoint (no rate limiting) - Handle BEFORE rate limiter
+  app.head('/api', (req, res) => {
+    res.status(200).end();
+  });
+
+  // General API rate limiter 
   const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per windowMs
+    max: 1000, // Increased limit for general API calls
     message: {
       error: "Too many requests, please try again later."
     },
@@ -98,8 +103,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     legacyHeaders: false,
   });
 
-  // Apply rate limiting to all API routes
-  app.use('/api/', apiLimiter);
+  // Apply rate limiting to all API routes EXCEPT health check
+  app.use('/api/', (req, res, next) => {
+    // Skip rate limiting for HEAD requests to /api
+    if (req.method === 'HEAD' && req.path === '/api') {
+      return next();
+    }
+    // Apply rate limiting to all other API routes
+    apiLimiter(req, res, next);
+  });
   
   // Get all apps
   app.get("/api/apps", async (req, res) => {
@@ -300,8 +312,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (purchase) {
           await storage.updatePurchaseStatus(purchase.id, "completed");
           
-          // TODO: Send purchase confirmation email
-          // TODO: Provide app download/access instructions
+          // Get purchase with app details for confirmation email
+          const purchaseWithApp = await storage.getPurchaseWithApp(purchase.id);
+          if (purchaseWithApp && transporter) {
+            // Send purchase confirmation email
+            try {
+              const downloadUrl = `${process.env.PUBLIC_URL || 'https://your-domain.com'}/api/download/${purchase.id}`;
+              
+              await transporter.sendMail({
+                from: process.env.GMAIL_USER,
+                to: purchase.customerEmail,
+                subject: `Your ${purchaseWithApp.app.name} Purchase is Complete!`,
+                html: `
+                  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                    <h1 style="color: #007acc; text-align: center;">Thank You for Your Purchase!</h1>
+                    
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                      <h2 style="color: #333; margin-top: 0;">Purchase Details</h2>
+                      <p><strong>App:</strong> ${purchaseWithApp.app.name}</p>
+                      <p><strong>Amount:</strong> $${purchaseWithApp.amount}</p>
+                      <p><strong>Purchase Date:</strong> ${new Date().toLocaleDateString()}</p>
+                    </div>
+                    
+                    <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #28a745;">
+                      <h3 style="color: #155724; margin-top: 0;">Access Your App</h3>
+                      <p style="color: #155724;">Your app is ready for download! Click the secure link below:</p>
+                      <div style="text-align: center; margin: 20px 0;">
+                        <a href="${downloadUrl}" style="background: #007acc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">Download ${purchaseWithApp.app.name}</a>
+                      </div>
+                      <p style="color: #6c757d; font-size: 14px;">This download link is secure and will remain valid for 30 days.</p>
+                    </div>
+                    
+                    ${purchaseWithApp.app.githubUrl ? `
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                      <h3 style="color: #333; margin-top: 0;">Source Code Access</h3>
+                      <p>You also have access to the source code repository:</p>
+                      <p><a href="${purchaseWithApp.app.githubUrl}" style="color: #007acc;">${purchaseWithApp.app.githubUrl}</a></p>
+                    </div>
+                    ` : ''}
+                    
+                    <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ffc107;">
+                      <h3 style="color: #856404; margin-top: 0;">Need Help?</h3>
+                      <p style="color: #856404;">If you have any questions or need assistance with your purchase, please don't hesitate to reach out to us.</p>
+                    </div>
+                    
+                    <hr style="margin: 30px 0; border: none; border-top: 1px solid #dee2e6;">
+                    <p style="color: #6c757d; font-size: 12px; text-align: center;">
+                      This email was sent from ZIGZAG APPS. You received this because you purchased ${purchaseWithApp.app.name}.
+                    </p>
+                  </div>
+                `,
+              });
+              
+              console.log(`Purchase confirmation email sent to ${purchase.customerEmail}`);
+            } catch (emailError) {
+              console.error("Failed to send purchase confirmation email:", emailError);
+            }
+          }
         }
       } catch (error) {
         console.error("Error updating purchase status:", error);
@@ -323,6 +390,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     res.json({ received: true });
+  });
+
+  // Create secure download endpoint for purchased apps
+  app.get("/api/download/:purchaseId", async (req, res) => {
+    try {
+      const { purchaseId } = req.params;
+      
+      const purchaseWithApp = await storage.getPurchaseWithApp(purchaseId);
+      if (!purchaseWithApp) {
+        return res.status(404).json({ message: "Purchase not found" });
+      }
+      
+      if (purchaseWithApp.status !== "completed") {
+        return res.status(403).json({ message: "Purchase not completed" });
+      }
+      
+      // Check if download link is still valid (30 days)
+      const purchaseDate = new Date(purchaseWithApp.createdAt || '');
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      
+      if (purchaseDate < thirtyDaysAgo) {
+        return res.status(410).json({ message: "Download link has expired. Please contact support." });
+      }
+      
+      // For demo purposes, redirect to GitHub or demo URL
+      // In a real app, you'd serve the actual downloadable file
+      const downloadUrl = purchaseWithApp.app.githubUrl || purchaseWithApp.app.demoUrl;
+      if (downloadUrl) {
+        res.redirect(downloadUrl);
+      } else {
+        res.json({
+          message: "Download ready",
+          app: {
+            name: purchaseWithApp.app.name,
+            description: purchaseWithApp.app.description,
+            githubUrl: purchaseWithApp.app.githubUrl,
+            demoUrl: purchaseWithApp.app.demoUrl
+          },
+          instructions: "Please contact support for download instructions."
+        });
+      }
+    } catch (error) {
+      console.error("Error processing download request:", error);
+      res.status(500).json({ message: "Failed to process download request" });
+    }
   });
 
   const httpServer = createServer(app);

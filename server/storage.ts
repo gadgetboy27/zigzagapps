@@ -33,6 +33,7 @@ export interface IStorage {
   createPurchase(purchase: InsertPurchase): Promise<Purchase>;
   getPurchaseByPaymentIntent(paymentIntentId: string): Promise<Purchase | undefined>;
   updatePurchaseStatus(id: string, status: string): Promise<Purchase>;
+  getPurchaseWithApp(id: string): Promise<(Purchase & { app: App }) | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -52,7 +53,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createApp(appData: InsertApp): Promise<App> {
-    const [app] = await db.insert(apps).values(appData).returning();
+    const [app] = await db.insert(apps).values(appData as any).returning();
     return app;
   }
 
@@ -63,17 +64,17 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createTestimonial(testimonialData: InsertTestimonial): Promise<Testimonial> {
-    const [testimonial] = await db.insert(testimonials).values(testimonialData).returning();
+    const [testimonial] = await db.insert(testimonials).values(testimonialData as any).returning();
     return testimonial;
   }
 
   async createContactSubmission(contactData: InsertContact): Promise<ContactSubmission> {
-    const [contact] = await db.insert(contactSubmissions).values(contactData).returning();
+    const [contact] = await db.insert(contactSubmissions).values(contactData as any).returning();
     return contact;
   }
 
   async createPurchase(purchaseData: InsertPurchase): Promise<Purchase> {
-    const [purchase] = await db.insert(purchases).values(purchaseData).returning();
+    const [purchase] = await db.insert(purchases).values(purchaseData as any).returning();
     return purchase;
   }
 
@@ -89,6 +90,23 @@ export class DatabaseStorage implements IStorage {
       .where(eq(purchases.id, id))
       .returning();
     return purchase;
+  }
+
+  async getPurchaseWithApp(id: string): Promise<(Purchase & { app: App }) | undefined> {
+    const result = await db.select({
+      purchase: purchases,
+      app: apps
+    })
+    .from(purchases)
+    .innerJoin(apps, eq(purchases.appId, apps.id))
+    .where(eq(purchases.id, id));
+    
+    if (result.length === 0) return undefined;
+    
+    return {
+      ...result[0].purchase,
+      app: result[0].app
+    };
   }
 }
 
