@@ -60,7 +60,6 @@ export default function ContactSection() {
       {/* Gradient background */}
       <div className="absolute inset-0 gradient-parallax-3 opacity-20"></div>
       {/* Coding overlay */}
-      <div className="absolute inset-0 coding-overlay"></div>
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-4xl mx-auto">
           <AnimatedHeader 

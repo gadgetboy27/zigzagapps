@@ -48,7 +48,6 @@ export default function PremiumStore() {
       {/* Gradient background */}
       <div className="absolute inset-0 gradient-parallax-2 opacity-20"></div>
       {/* Coding overlay */}
-      <div className="absolute inset-0 coding-overlay"></div>
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <AnimatedHeader 

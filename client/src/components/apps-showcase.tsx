@@ -58,7 +58,6 @@ export default function AppsShowcase() {
       {/* Gradient background */}
       <div className="absolute inset-0 gradient-parallax-1 opacity-20"></div>
       {/* Coding overlay */}
-      <div className="absolute inset-0 coding-overlay"></div>
       <div className="container mx-auto px-6 relative z-10">
         <AnimatedHeader 
           text="MY APPS" 
