@@ -1,3 +1,5 @@
+import React from "react";
+
 export default function AboutSection() {
   return (
     <section id="about" className="min-h-screen py-20 snap-section">

@@ -1,3 +1,4 @@
+import React from "react";
 import { useScrollSpy } from "@/hooks/use-scroll-spy";
 
 const sections = [

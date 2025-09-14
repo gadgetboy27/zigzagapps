@@ -1,3 +1,4 @@
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import type { App } from "@shared/schema";

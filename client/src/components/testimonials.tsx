@@ -1,3 +1,4 @@
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { Testimonial } from "@shared/schema";
 import AnimatedHeader from "@/components/animated-header";

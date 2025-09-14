@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import CustomCursor from "@/components/custom-cursor";
 import NavigationDots from "@/components/navigation-dots";
 import HeroSection from "@/components/hero-section";

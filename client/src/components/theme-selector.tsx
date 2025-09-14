@@ -1,6 +1,6 @@
+import React, { useState } from 'react';
 import { useTheme, type Theme } from '@/contexts/theme-context';
 import { ChevronDownIcon } from 'lucide-react';
-import { useState } from 'react';
 
 export default function ThemeSelector() {
   const { theme, setTheme } = useTheme();

@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, useCallback } from "react"
+import React, { createContext, useContext, useState, useCallback } from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { X } from "lucide-react"
 import { cn } from "@/lib/utils"

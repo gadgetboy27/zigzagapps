@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { App } from "@shared/schema";
 import AnimatedHeader from "./animated-header";
