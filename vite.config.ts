@@ -7,6 +7,7 @@ export default defineConfig({
   plugins: [
     react({
       jsxRuntime: "automatic",
+      fastRefresh: false,
     }),
     runtimeErrorOverlay(),
     ...(process.env.NODE_ENV !== "production" &&
