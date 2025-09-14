@@ -46,7 +46,7 @@ export default function PremiumStore() {
   return (
     <section id="store" className="min-h-screen py-20 snap-section apple-scroll-section relative overflow-hidden">
       {/* Gradient background */}
-      <div className="absolute inset-0 gradient-parallax-2 opacity-20"></div>
+      <div className="absolute inset-0 gradient-parallax-2 opacity-20 z-0"></div>
       {/* Background overlay */}
       <div className="absolute inset-0 background-overlay"></div>
       <div className="container mx-auto px-6 relative z-10">
