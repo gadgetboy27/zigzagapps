@@ -109,13 +109,6 @@
 }
 
 @layer components {
+
   /* Background overlay */
-  .background-overlay {
-    background-image: url('https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=800&h=400');
-    background-size: cover;
-    background-position: center;
-    opacity: 0.3;
-    pointer-events: none;
-    z-index: 1;
-  }
 }
