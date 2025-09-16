@@ -75,7 +75,7 @@ export default function Home() {
               <a href="/privacy" className="text-muted-foreground hover:text-primary transition-colors">Privacy</a>
               <a href="/terms" className="text-muted-foreground hover:text-primary transition-colors">Terms</a>
             </div>
-            <p className="text-muted-foreground text-sm">© 2025 Henry Peti. All rights reserved.</p>
+            <p className="text-muted-foreground text-sm">© 2025 zigzagapps. All rights reserved.</p>
           </div>
         </div>
       </footer>
