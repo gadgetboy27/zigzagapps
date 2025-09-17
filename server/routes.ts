@@ -39,6 +39,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       'http://localhost:5173', // Vite dev server
       'http://localhost:4173', // Vite preview
       'http://localhost:5000', // Local production
+      'https://zigzagapps.net', // Production domain
     ];
     
     // Add Netlify domains from environment variable
