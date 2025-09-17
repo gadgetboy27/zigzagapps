@@ -442,6 +442,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // TEMPORARY: Seed endpoint for production database
+  // Remove this after seeding production database
+  app.post("/api/seed", async (req, res) => {
+    try {
+      // Import seed function dynamically
+      const { seedDatabase } = await import("./seed");
+      
+      console.log("Starting production database seeding...");
+      await seedDatabase();
+      
+      res.json({ 
+        success: true, 
+        message: "Database seeded successfully with legitimate apps and testimonials",
+        timestamp: new Date().toISOString()
+      });
+    } catch (error: any) {
+      console.error("Error seeding database:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to seed database: " + error.message 
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
