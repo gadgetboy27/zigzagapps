@@ -462,31 +462,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // TEMPORARY: Import JSON data (use in production)  
   app.post("/api/import", async (req, res) => {
     try {
-      const { apps, testimonials } = req.body;
+      const { apps, testimonials = [] } = req.body;
       
-      if (!apps || !testimonials) {
-        return res.status(400).json({ error: "Missing apps or testimonials data" });
+      if (!apps || !Array.isArray(apps)) {
+        return res.status(400).json({ error: "Missing or invalid apps data" });
       }
 
-      // Import seed function to use upsert logic
-      const { seedDatabase } = await import("./seed");
-      
       console.log(`Importing ${apps.length} apps and ${testimonials.length} testimonials...`);
       
-      // Clear and add the exported data
+      let importedApps = 0;
+      let importedTestimonials = 0;
+      
+      // Import apps
       for (const app of apps) {
-        const { id, createdAt, updatedAt, ...appData } = app;
-        await storage.createApp(appData as any);
+        try {
+          // Remove database-specific fields
+          const { id, createdAt, updatedAt, created_at, updated_at, ...appData } = app;
+          
+          // Convert snake_case to camelCase for the schema
+          const cleanAppData = {
+            name: appData.name,
+            description: appData.description,
+            longDescription: appData.long_description || appData.longDescription,
+            price: appData.price,
+            category: appData.category,
+            imageUrl: appData.image_url || appData.imageUrl,
+            demoUrl: appData.demo_url || appData.demoUrl,
+            githubUrl: appData.github_url || appData.githubUrl,
+            technologies: appData.technologies || [],
+            features: appData.features || [],
+            isPremium: appData.is_premium ?? appData.isPremium ?? false,
+            isActive: appData.is_active ?? appData.isActive ?? true
+          };
+          
+          await storage.createApp(cleanAppData);
+          importedApps++;
+        } catch (appError) {
+          console.error(`Error importing app ${app.name}:`, appError);
+        }
       }
       
+      // Import testimonials
       for (const testimonial of testimonials) {
-        const { id, createdAt, ...testimonialData } = testimonial;
-        await storage.createTestimonial(testimonialData as any);
+        try {
+          const { id, createdAt, created_at, ...testimonialData } = testimonial;
+          await storage.createTestimonial(testimonialData);
+          importedTestimonials++;
+        } catch (testimonialError) {
+          console.error(`Error importing testimonial:`, testimonialError);
+        }
       }
       
       res.json({ 
         success: true, 
-        message: `Imported ${apps.length} apps and ${testimonials.length} testimonials`,
+        message: `Successfully imported ${importedApps} apps and ${importedTestimonials} testimonials`,
         timestamp: new Date().toISOString()
       });
     } catch (error: any) {
