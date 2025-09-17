@@ -442,26 +442,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // TEMPORARY: Seed endpoint for production database
-  // Remove this after seeding production database
-  app.post("/api/seed", async (req, res) => {
+  // TEMPORARY: Export data as JSON (use in development)
+  app.get("/api/export", async (req, res) => {
     try {
-      // Import seed function dynamically
+      const apps = await storage.getApps();
+      const testimonials = await storage.getTestimonials();
+      
+      res.json({
+        apps: apps,
+        testimonials: testimonials,
+        exportedAt: new Date().toISOString()
+      });
+    } catch (error: any) {
+      console.error("Error exporting data:", error);
+      res.status(500).json({ error: "Failed to export data: " + error.message });
+    }
+  });
+
+  // TEMPORARY: Import JSON data (use in production)  
+  app.post("/api/import", async (req, res) => {
+    try {
+      const { apps, testimonials } = req.body;
+      
+      if (!apps || !testimonials) {
+        return res.status(400).json({ error: "Missing apps or testimonials data" });
+      }
+
+      // Import seed function to use upsert logic
       const { seedDatabase } = await import("./seed");
       
-      console.log("Starting production database seeding...");
-      await seedDatabase();
+      console.log(`Importing ${apps.length} apps and ${testimonials.length} testimonials...`);
+      
+      // Clear and add the exported data
+      for (const app of apps) {
+        const { id, createdAt, updatedAt, ...appData } = app;
+        await storage.createApp(appData as any);
+      }
+      
+      for (const testimonial of testimonials) {
+        const { id, createdAt, ...testimonialData } = testimonial;
+        await storage.createTestimonial(testimonialData as any);
+      }
       
       res.json({ 
         success: true, 
-        message: "Database seeded successfully with legitimate apps and testimonials",
+        message: `Imported ${apps.length} apps and ${testimonials.length} testimonials`,
         timestamp: new Date().toISOString()
       });
     } catch (error: any) {
-      console.error("Error seeding database:", error);
+      console.error("Error importing data:", error);
       res.status(500).json({ 
         success: false, 
-        message: "Failed to seed database: " + error.message 
+        error: "Failed to import data: " + error.message 
       });
     }
   });
