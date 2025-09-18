@@ -3,12 +3,14 @@ import zigzagLogo from "@assets/zigzag-man_1758167236321.png";
 
 interface HeroSectionProps {
   onTypingComplete?: (isComplete: boolean) => void;
+  onLogoDissolveComplete?: () => void;
 }
 
-export default function HeroSection({ onTypingComplete }: HeroSectionProps) {
+export default function HeroSection({ onTypingComplete, onLogoDissolveComplete }: HeroSectionProps) {
   const [displayedText, setDisplayedText] = useState("");
   const [logoEntranceActive, setLogoEntranceActive] = useState(false);
   const [logoFloatActive, setLogoFloatActive] = useState(false);
+  const [logoDissolving, setLogoDissolving] = useState(false);
   const fullText = "ZIGZAG APPS";
   const typingSpeed = 120; // ms per character
   
@@ -17,6 +19,7 @@ export default function HeroSection({ onTypingComplete }: HeroSectionProps) {
       setDisplayedText("");
       setLogoEntranceActive(false);
       setLogoFloatActive(false);
+      setLogoDissolving(false);
       // Notify parent that typing is restarting
       onTypingComplete?.(false);
       
@@ -36,6 +39,15 @@ export default function HeroSection({ onTypingComplete }: HeroSectionProps) {
           setLogoFloatActive(true);
           // Notify parent that typing is complete exactly when "S" shows
           onTypingComplete?.(true);
+          
+          // Start dissolve sequence after float has been active for 2 seconds
+          setTimeout(() => {
+            setLogoDissolving(true);
+            // Notify parent when dissolve completes (after 900ms animation duration)
+            setTimeout(() => {
+              onLogoDissolveComplete?.();
+            }, 900);
+          }, 2000);
         }
       }, typingSpeed);
       return timer;
@@ -86,7 +98,9 @@ export default function HeroSection({ onTypingComplete }: HeroSectionProps) {
             <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 z-10 brutalist-logo-shadow logo-optimized ${
                 logoEntranceActive ? 'logo-entrance' : 'transform -translate-x-full opacity-0'
               } ${
-                logoFloatActive ? 'logo-float' : ''
+                logoFloatActive && !logoDissolving ? 'logo-float' : ''
+              } ${
+                logoDissolving ? 'logo-dissolve' : ''
               }`}
               data-testid="animated-logo"
             >

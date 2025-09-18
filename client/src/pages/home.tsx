@@ -12,6 +12,7 @@ import zigzagLogo from "@assets/zigzag-man_1758167236321.png";
 
 export default function Home() {
   const [isTypingComplete, setIsTypingComplete] = useState(false);
+  const [showNavbarLogo, setShowNavbarLogo] = useState(false);
   
   useEffect(() => {
     // SEO and document setup
@@ -25,6 +26,17 @@ export default function Home() {
   
   const handleTypingComplete = (isComplete: boolean) => {
     setIsTypingComplete(isComplete);
+    // Reset navbar logo when typing restarts
+    if (!isComplete) {
+      setShowNavbarLogo(false);
+    }
+  };
+
+  const handleLogoDissolveComplete = () => {
+    // Add a small delay before showing navbar logo for smoother transition
+    setTimeout(() => {
+      setShowNavbarLogo(true);
+    }, 300);
   };
 
   return (
@@ -39,12 +51,12 @@ export default function Home() {
             <div className="text-xl font-bold text-primary font-mono relative" data-testid="logo">
               {/* Default ZZ text */}
               <span className={`text-gradient transition-all duration-500 ${
-                isTypingComplete ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
+                showNavbarLogo ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
               }`}>ZZ</span>
               
-              {/* Logo that appears when typing completes */}
+              {/* Logo that appears when main logo dissolve completes */}
               <div className={`absolute inset-0 flex items-center justify-center transition-all duration-700 ${
-                isTypingComplete ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-50 translate-y-2'
+                showNavbarLogo ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-50 translate-y-2'
               }`}>
                 <img 
                   src={zigzagLogo} 
@@ -77,7 +89,7 @@ export default function Home() {
         </nav>
       </header>
 
-      <HeroSection onTypingComplete={handleTypingComplete} />
+      <HeroSection onTypingComplete={handleTypingComplete} onLogoDissolveComplete={handleLogoDissolveComplete} />
       <AboutSection />
       <AppsShowcase />
       <PremiumStore />
