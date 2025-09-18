@@ -1,11 +1,14 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
+import type { IncomingMessage, ServerResponse } from "http";
 import Stripe from "stripe";
 import express from "express";
 import nodemailer from "nodemailer";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import validator from "validator";
+import crypto from "crypto";
+import { createProxyMiddleware, type Options } from "http-proxy-middleware";
 import { storage } from "./storage";
 import { insertContactSchema, insertPurchaseSchema } from "@shared/schema";
 import { z } from "zod";
@@ -62,7 +65,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     next();
   });
   
-  // Security middleware
+  // Security middleware with CSP bypass for demo proxy routes
+  app.use('/api/demo-proxy', (req, res, next) => {
+    // Disable CSP for proxy routes to allow proxied content to load
+    res.setHeader('Content-Security-Policy', '');
+    res.setHeader('X-Content-Security-Policy', '');
+    res.setHeader('X-WebKit-CSP', '');
+    next();
+  });
+
   app.use(helmet({
     contentSecurityPolicy: {
       directives: {
@@ -86,6 +97,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     max: 5, // Limit each IP to 5 contact form submissions per windowMs
     message: {
       error: "Too many contact form submissions, please try again later."
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  // Rate limiting for demo access
+  const demoAccessLimiter = rateLimit({
+    windowMs: 24 * 60 * 60 * 1000, // 24 hours
+    max: 10, // Limit each IP to 10 demo access requests per day
+    message: {
+      error: "Too many demo requests today, please try again later."
     },
     standardHeaders: true,
     legacyHeaders: false,
@@ -142,6 +164,251 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching app:", error);
       res.status(500).json({ message: "Failed to fetch app" });
+    }
+  });
+
+  // Generate demo access token
+  app.post("/api/demo-access/:appId", demoAccessLimiter, async (req, res) => {
+    try {
+      const { appId } = req.params;
+      const ipAddress = req.ip || req.connection.remoteAddress || "unknown";
+      const userAgent = req.get("User-Agent") || "";
+
+      // Check if app exists and has demo URL
+      const app = await storage.getApp(appId);
+      if (!app) {
+        return res.status(404).json({ message: "App not found" });
+      }
+
+      if (!app.demoUrl) {
+        return res.status(400).json({ message: "Demo not available for this app" });
+      }
+
+      // Check daily session limit (max 2 per IP per app per day)
+      const dailySessionCount = await storage.getDemoSessionsCountByIpAndAppToday(ipAddress, appId);
+      if (dailySessionCount >= 2) {
+        return res.status(429).json({ 
+          message: "Daily demo limit reached. Purchase the app for unlimited access.",
+          requiresPurchase: true,
+          app: {
+            id: app.id,
+            name: app.name,
+            price: app.price
+          }
+        });
+      }
+
+      // Check active session limit (max 2 active sessions per IP per app)
+      const activeSessionCount = await storage.getActiveDemoSessionsCountByIpAndApp(ipAddress, appId);
+      if (activeSessionCount >= 2) {
+        return res.status(429).json({ 
+          message: "Too many active demo sessions. Wait for existing sessions to expire or purchase the app.",
+          requiresPurchase: true,
+          app: {
+            id: app.id,
+            name: app.name,
+            price: app.price
+          }
+        });
+      }
+
+      // Generate secure session token
+      const sessionToken = crypto.randomBytes(32).toString("hex");
+
+      // Create demo session (10 minutes duration)
+      const startTime = new Date();
+      const endTime = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+      const demoSession = await storage.createDemoSession({
+        appId,
+        sessionToken,
+        ipAddress,
+        userAgent,
+        startTime,
+        endTime,
+        isActive: true
+      });
+
+      // Cleanup expired sessions
+      await storage.cleanupExpiredDemoSessions();
+
+      res.json({ 
+        success: true,
+        sessionToken,
+        expiresAt: endTime.toISOString(),
+        durationMinutes: 10,
+        message: "Demo access granted. Session expires in 10 minutes."
+      });
+    } catch (error) {
+      console.error("Error creating demo session:", error);
+      res.status(500).json({ message: "Failed to create demo session" });
+    }
+  });
+
+  // Secure demo proxy with token validation on every request
+  app.use("/api/demo-proxy/:token/*?", async (req, res, next) => {
+    try {
+      const { token } = req.params;
+      const targetPath = (req.params as any)['0'] || '';
+
+      // Validate demo session with IP/UA binding on every request
+      const clientIP = req.ip || req.connection.remoteAddress || "unknown";
+      const userAgent = req.get("User-Agent") || "";
+      const validation = await storage.validateDemoSession(token, clientIP, userAgent);
+      
+      if (!validation.valid || !validation.session || !validation.app) {
+        // Handle different validation failure scenarios
+        if (validation.error === 'IP address mismatch - session cannot be shared') {
+          return res.status(403).json({ 
+            message: validation.error,
+            securityViolation: true,
+            requiresPurchase: true,
+            app: validation.app ? {
+              id: validation.app.id,
+              name: validation.app.name,
+              price: validation.app.price
+            } : undefined
+          });
+        }
+        
+        if (validation.error === 'Session security violation - please request a new demo') {
+          return res.status(403).json({ 
+            message: validation.error,
+            securityViolation: true
+          });
+        }
+        
+        // Session expired or invalid
+        if (validation.session && validation.app) {
+          return res.status(410).json({ 
+            message: "Demo session has expired. Purchase the app for unlimited access.",
+            expired: true,
+            requiresPurchase: true,
+            app: {
+              id: validation.app.id,
+              name: validation.app.name,
+              price: validation.app.price
+            }
+          });
+        }
+        
+        return res.status(404).json({ message: "Invalid demo session" });
+      }
+
+      // Get the target demo URL
+      const demoUrl = validation.app.demoUrl!;
+      const targetUrl = new URL(demoUrl);
+      
+      // Create secure reverse proxy with comprehensive security and HTML rewriting
+      const proxyOptions: Options = {
+        target: targetUrl.origin,
+        changeOrigin: true,
+        secure: true,
+        followRedirects: true,
+        selfHandleResponse: true, // Critical: Handle response manually for proper URL rewriting
+        pathRewrite: (path: string) => {
+          // Extract the path after the token
+          const tokenPath = `/api/demo-proxy/${token}`;
+          const relativePath = path.replace(tokenPath, '') || '/';
+          return targetUrl.pathname + (relativePath === '/' ? '' : relativePath);
+        },
+        on: {
+          proxyReq: (proxyReq: any, req: IncomingMessage) => {
+            // Remove token from headers to prevent exposure
+            proxyReq.removeHeader('authorization');
+            proxyReq.removeHeader('x-demo-session');
+            
+            // Add security headers
+            proxyReq.setHeader('X-Forwarded-Proto', 'https');
+            proxyReq.setHeader('User-Agent', 'ZIGZAG-DEMO-PROXY/1.0');
+          },
+          proxyRes: (proxyRes: any, req: IncomingMessage, res: ServerResponse) => {
+            // Security: Remove/sanitize dangerous headers
+            delete proxyRes.headers['x-original-url'];
+            delete proxyRes.headers['x-forwarded-host'];
+            delete proxyRes.headers['x-forwarded-for'];
+            delete proxyRes.headers['set-cookie']; // Strip cookies to prevent security issues
+            
+            // Sanitize Location header to prevent URL leakage
+            if (proxyRes.headers.location) {
+              const location = proxyRes.headers.location;
+              if (location.startsWith(targetUrl.origin)) {
+                proxyRes.headers.location = location.replace(targetUrl.origin, `/api/demo-proxy/${token}`);
+              }
+            }
+            
+            // Disable caching on proxy responses
+            proxyRes.headers['cache-control'] = 'no-cache, no-store, must-revalidate';
+            proxyRes.headers['pragma'] = 'no-cache';
+            proxyRes.headers['expires'] = '0';
+            
+            // Add security headers
+            proxyRes.headers['X-Content-Type-Options'] = 'nosniff';
+            proxyRes.headers['X-Frame-Options'] = 'SAMEORIGIN';
+            proxyRes.headers['X-Robots-Tag'] = 'noindex, nofollow';
+            
+            // Set response status and headers explicitly
+            res.statusCode = proxyRes.statusCode || 200;
+            Object.keys(proxyRes.headers).forEach(key => {
+              res.setHeader(key, proxyRes.headers[key]!);
+            });
+            
+            // Buffer and process response content
+            let body = Buffer.alloc(0);
+            
+            proxyRes.on('data', (chunk: Buffer) => {
+              body = Buffer.concat([body, chunk]);
+            });
+            
+            proxyRes.on('end', () => {
+              let content = body;
+              const contentType = proxyRes.headers['content-type'] || '';
+              
+              // Comprehensive URL rewriting for HTML content
+              if (contentType.includes('text/html') || contentType.includes('application/javascript') || contentType.includes('text/css')) {
+                let bodyStr = content.toString('utf8');
+                
+                // Rewrite absolute URLs to use our proxy
+                const originRegex = new RegExp(targetUrl.origin.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+                bodyStr = bodyStr.replace(originRegex, `/api/demo-proxy/${token}`);
+                
+                // Rewrite protocol-relative URLs
+                const protocolRelativeRegex = new RegExp(`//${targetUrl.hostname}`, 'g');
+                bodyStr = bodyStr.replace(protocolRelativeRegex, `/api/demo-proxy/${token}`);
+                
+                // Rewrite root-relative URLs for same domain assets
+                if (contentType.includes('text/html')) {
+                  bodyStr = bodyStr.replace(/(?:src|href|action)="\//g, `$&api/demo-proxy/${token}/`);
+                  bodyStr = bodyStr.replace(/(?:src|href|action)='\//g, `$&api/demo-proxy/${token}/`);
+                }
+                
+                content = Buffer.from(bodyStr, 'utf8');
+              }
+              
+              // Set proper content length
+              res.setHeader('Content-Length', content.length);
+              res.end(content);
+            });
+          },
+          error: (err: any, req: IncomingMessage, res: any) => {
+            console.error('Proxy error:', err);
+            if (res && !res.headersSent && typeof res.status === 'function') {
+              res.status(502).json({ 
+                message: 'Demo content temporarily unavailable',
+                error: 'proxy_error'
+              });
+            }
+          }
+        }
+      };
+      
+      const proxy = createProxyMiddleware(proxyOptions);
+
+      // Use the proxy
+      proxy(req, res, next);
+    } catch (error) {
+      console.error("Error in demo proxy:", error);
+      res.status(500).json({ message: "Failed to access demo content" });
     }
   });
 

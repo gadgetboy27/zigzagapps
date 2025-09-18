@@ -55,6 +55,18 @@ export const purchases = pgTable("purchases", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const demoSessions = pgTable("demo_sessions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  appId: varchar("app_id").references(() => apps.id).notNull(),
+  sessionToken: text("session_token").notNull().unique(),
+  ipAddress: varchar("ip_address").notNull(),
+  userAgent: text("user_agent"),
+  startTime: timestamp("start_time").defaultNow().notNull(),
+  endTime: timestamp("end_time").notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertAppSchema = createInsertSchema(apps).omit({
   id: true,
   createdAt: true,
@@ -77,6 +89,11 @@ export const insertPurchaseSchema = createInsertSchema(purchases).omit({
   createdAt: true,
 });
 
+export const insertDemoSessionSchema = createInsertSchema(demoSessions).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type App = typeof apps.$inferSelect;
 export type InsertApp = z.infer<typeof insertAppSchema>;
 export type Testimonial = typeof testimonials.$inferSelect;
@@ -85,3 +102,5 @@ export type ContactSubmission = typeof contactSubmissions.$inferSelect;
 export type InsertContact = z.infer<typeof insertContactSchema>;
 export type Purchase = typeof purchases.$inferSelect;
 export type InsertPurchase = z.infer<typeof insertPurchaseSchema>;
+export type DemoSession = typeof demoSessions.$inferSelect;
+export type InsertDemoSession = z.infer<typeof insertDemoSessionSchema>;

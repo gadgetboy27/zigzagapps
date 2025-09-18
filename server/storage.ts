@@ -3,6 +3,7 @@ import {
   testimonials, 
   contactSubmissions, 
   purchases,
+  demoSessions,
   type App, 
   type InsertApp,
   type Testimonial,
@@ -10,10 +11,12 @@ import {
   type ContactSubmission,
   type InsertContact,
   type Purchase,
-  type InsertPurchase 
+  type InsertPurchase,
+  type DemoSession,
+  type InsertDemoSession
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and, gte, lt, count } from "drizzle-orm";
 
 export interface IStorage {
   // Apps
@@ -34,6 +37,15 @@ export interface IStorage {
   getPurchaseByPaymentIntent(paymentIntentId: string): Promise<Purchase | undefined>;
   updatePurchaseStatus(id: string, status: string): Promise<Purchase>;
   getPurchaseWithApp(id: string): Promise<(Purchase & { app: App }) | undefined>;
+  
+  // Demo Sessions
+  createDemoSession(session: InsertDemoSession): Promise<DemoSession>;
+  getDemoSessionByToken(token: string): Promise<DemoSession | undefined>;
+  validateDemoSession(token: string, requestIp?: string, requestUserAgent?: string): Promise<{ valid: boolean; session?: DemoSession; app?: App; error?: string }>;
+  getActiveDemoSessionsCountByIpAndApp(ipAddress: string, appId: string): Promise<number>;
+  getDemoSessionsCountByIpAndAppToday(ipAddress: string, appId: string): Promise<number>;
+  deactivateDemoSession(id: string): Promise<void>;
+  cleanupExpiredDemoSessions(): Promise<number>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -107,6 +119,108 @@ export class DatabaseStorage implements IStorage {
       ...result[0].purchase,
       app: result[0].app
     };
+  }
+
+  // Demo Sessions
+  async createDemoSession(sessionData: InsertDemoSession): Promise<DemoSession> {
+    const [session] = await db.insert(demoSessions).values(sessionData as any).returning();
+    return session;
+  }
+
+  async getDemoSessionByToken(token: string): Promise<DemoSession | undefined> {
+    const [session] = await db.select().from(demoSessions)
+      .where(eq(demoSessions.sessionToken, token));
+    return session;
+  }
+
+  async validateDemoSession(token: string, requestIp?: string, requestUserAgent?: string): Promise<{ valid: boolean; session?: DemoSession; app?: App; error?: string }> {
+    const result = await db.select({
+      session: demoSessions,
+      app: apps
+    })
+    .from(demoSessions)
+    .innerJoin(apps, eq(demoSessions.appId, apps.id))
+    .where(eq(demoSessions.sessionToken, token));
+
+    if (result.length === 0) {
+      return { valid: false, error: 'Session not found' };
+    }
+
+    const { session, app } = result[0];
+    const now = new Date();
+    const endTime = new Date(session.endTime);
+
+    // Check if session is active and not expired
+    if (!session.isActive || now > endTime) {
+      return { valid: false, session, app, error: 'Session expired' };
+    }
+
+    // Enhanced security: Check IP binding
+    if (requestIp && session.ipAddress !== requestIp) {
+      return { valid: false, session, app, error: 'IP address mismatch - session cannot be shared' };
+    }
+
+    // Optional: Check User-Agent binding for additional security
+    if (requestUserAgent && session.userAgent && session.userAgent !== requestUserAgent) {
+      return { valid: false, session, app, error: 'Session security violation - please request a new demo' };
+    }
+
+    return { valid: true, session, app };
+  }
+
+  async getActiveDemoSessionsCountByIpAndApp(ipAddress: string, appId: string): Promise<number> {
+    const now = new Date();
+    const [result] = await db.select({ count: count() })
+      .from(demoSessions)
+      .where(
+        and(
+          eq(demoSessions.ipAddress, ipAddress),
+          eq(demoSessions.appId, appId),
+          eq(demoSessions.isActive, true),
+          gte(demoSessions.endTime, now)
+        )
+      );
+    return result?.count || 0;
+  }
+
+  async getDemoSessionsCountByIpAndAppToday(ipAddress: string, appId: string): Promise<number> {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const [result] = await db.select({ count: count() })
+      .from(demoSessions)
+      .where(
+        and(
+          eq(demoSessions.ipAddress, ipAddress),
+          eq(demoSessions.appId, appId),
+          gte(demoSessions.createdAt, startOfDay),
+          lt(demoSessions.createdAt, endOfDay)
+        )
+      );
+    return result?.count || 0;
+  }
+
+  async deactivateDemoSession(id: string): Promise<void> {
+    await db.update(demoSessions)
+      .set({ isActive: false })
+      .where(eq(demoSessions.id, id));
+  }
+
+  async cleanupExpiredDemoSessions(): Promise<number> {
+    const now = new Date();
+    const result = await db.update(demoSessions)
+      .set({ isActive: false })
+      .where(
+        and(
+          eq(demoSessions.isActive, true),
+          lt(demoSessions.endTime, now)
+        )
+      )
+      .returning({ id: demoSessions.id });
+    
+    return result.length;
   }
 }
 
