@@ -157,3 +157,107 @@
     z-index: 1;
   }*/
 }
+
+@layer utilities {
+  /* Logo entrance animations */
+  @keyframes logoSlideIn {
+    0% {
+      transform: translateX(-200px) scale(0.5) rotate(-10deg);
+      opacity: 0;
+      filter: blur(3px);
+    }
+    50% {
+      transform: translateX(-50px) scale(0.8) rotate(-2deg);
+      opacity: 0.7;
+      filter: blur(1px);
+    }
+    100% {
+      transform: translateX(0) scale(1) rotate(0deg);
+      opacity: 1;
+      filter: blur(0px);
+    }
+  }
+
+  @keyframes logoFloat {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-3px) rotate(1deg);
+    }
+  }
+
+  .logo-entrance {
+    animation: logoSlideIn 1200ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .logo-float {
+    animation: logoFloat 3s ease-in-out infinite;
+  }
+
+  /* Enhanced typing cursor animation */
+  .typing-cursor {
+    animation: blink 1s linear infinite;
+  }
+
+  @keyframes blink {
+    0%, 50% {
+      opacity: 1;
+    }
+    51%, 100% {
+      opacity: 0;
+    }
+  }
+
+  /* Brutalist shadow enhancement for logo */
+  .brutalist-logo-shadow {
+    filter: drop-shadow(4px 4px 0px hsl(var(--primary))) drop-shadow(2px 2px 0px hsl(var(--secondary)));
+  }
+
+  /* Text gradient enhancement */
+  .text-gradient {
+    background-size: 200% auto;
+    animation: gradientShift 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% center;
+    }
+    100% {
+      background-position: 100% center;
+    }
+  }
+
+  /* Performance optimizations for logo animations */
+  .logo-optimized {
+    will-change: transform, filter;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+  }
+
+  /* Accessibility: Respect user's motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .logo-entrance {
+      animation: none;
+      transform: translateX(0) scale(1) rotate(0deg);
+      opacity: 1;
+      filter: blur(0px);
+    }
+
+    .logo-float {
+      animation: none;
+      transform: translateY(0px) rotate(0deg);
+    }
+
+    .typing-cursor {
+      animation: none;
+      opacity: 1;
+    }
+
+    .text-gradient {
+      animation: none;
+      background-position: 0% center;
+    }
+  }
+}

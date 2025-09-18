@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from "react";
+import zigzagLogo from "@assets/logo-t-shirt-zig-zag_1758166586152.png";
 
 export default function HeroSection() {
   const [displayedText, setDisplayedText] = useState("");
+  const [logoEntranceActive, setLogoEntranceActive] = useState(false);
+  const [logoFloatActive, setLogoFloatActive] = useState(false);
   const fullText = "ZIGZAG APPS";
+  const typingSpeed = 120; // ms per character
   
   useEffect(() => {
     const startTyping = () => {
       setDisplayedText("");
+      setLogoEntranceActive(false);
+      setLogoFloatActive(false);
+      
+      // Start logo entrance animation immediately
+      setTimeout(() => setLogoEntranceActive(true), 50);
+      
       let currentIndex = 0;
       const timer = setInterval(() => {
         if (currentIndex <= fullText.length) {
@@ -14,8 +24,10 @@ export default function HeroSection() {
           currentIndex++;
         } else {
           clearInterval(timer);
+          // Start float animation when typing completes for perfect synchronization
+          setLogoFloatActive(true);
         }
-      }, 120); // Reduced from 150ms to 120ms for smoother effect
+      }, typingSpeed);
       return timer;
     };
 
@@ -58,13 +70,27 @@ export default function HeroSection() {
       
       <div className="container mx-auto px-6 text-center relative z-10">
         <div className="max-w-4xl mx-auto">
-          {/* Main animated title */}
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-black mb-4 leading-tight" data-testid="hero-title">
-            <span className="text-gradient bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-              {displayedText}
-            </span>
-            <span className="typing-cursor text-primary">|</span>
-          </h1>
+          {/* Main animated title with logo */}
+          <div className="relative">
+            {/* Animated Logo */}
+            <img 
+              src={zigzagLogo} 
+              alt="ZigZag Logo" 
+              className={`absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 z-10 brutalist-logo-shadow logo-optimized ${
+                logoEntranceActive ? 'logo-entrance' : 'transform -translate-x-full opacity-0'
+              } ${
+                logoFloatActive ? 'logo-float' : ''
+              }`}
+              data-testid="animated-logo"
+            />
+            
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-black mb-4 leading-tight pl-16 md:pl-20 lg:pl-24" data-testid="hero-title">
+              <span className="text-gradient bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+                {displayedText}
+              </span>
+              <span className="typing-cursor text-primary">|</span>
+            </h1>
+          </div>
           
           {/* Subtitle with name */}
           <div className="text-lg md:text-xl text-muted-foreground mb-8 font-mono">
