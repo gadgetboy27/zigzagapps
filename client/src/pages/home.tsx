@@ -24,7 +24,7 @@ export default function Home() {
     } else if (theme === 'dark') {
       return newDarkLogo; // New dark mode logo
     } else { // blue theme
-      return zigzagLogoTshirt; // T-shirt version also works well for blue theme
+      return newDarkLogo; // Same logo as dark mode
     }
   };
   
