@@ -1,66 +1,22 @@
 import React, { useState, useEffect } from "react";
-import zigzagLogoOriginal from "@assets/zigzag-man_1758167236321.png";
-import zigzagLogoTshirt from "@assets/logo-t-shirt-zig-zag_1758166586152.png";
-import zigzagLogoRedBlack from "@assets/zigzag_redBlack_1758166406884.png";
 import { useTheme } from "@/contexts/theme-context";
-import ZigzagLogo from "@/components/ZigzagLogo";
 
 interface HeroSectionProps {
   onTypingComplete?: (isComplete: boolean) => void;
-  onLogoDissolveComplete?: () => void;
 }
 
-export default function HeroSection({ onTypingComplete, onLogoDissolveComplete }: HeroSectionProps) {
+export default function HeroSection({ onTypingComplete }: HeroSectionProps) {
   const { theme } = useTheme();
   const [displayedText, setDisplayedText] = useState("");
-  const [logoEntranceActive, setLogoEntranceActive] = useState(false);
-  const [logoFloatActive, setLogoFloatActive] = useState(false);
-  const [logoDissolving, setLogoDissolving] = useState(false);
-  const [logoHasBeenDissolved, setLogoHasBeenDissolved] = useState(false);
-  // Demo toggle for custom SVG logo - set to true to showcase the new custom SVG logo!
-  const [useCustomSVGLogo, setUseCustomSVGLogo] = useState(true);
   const fullText = "ZIGZAG APPS";
   const typingSpeed = 120; // ms per character
   
-  // Calculate logo positioning and select appropriate logo asset based on theme
-  const getLogoAsset = () => {
-    if (theme === 'light') {
-      return zigzagLogoTshirt; // Best for light theme
-    } else if (theme === 'dark') {
-      return zigzagLogoRedBlack; // Red/black version for dark theme
-    } else { // blue theme
-      return zigzagLogoRedBlack; // Red/black also works well for blue theme
-    }
-  };
-  
-  // Dynamic positioning calculation for "pushed along" effect
-  const calculateLogoPosition = () => {
-    // Base position starts before first character
-    const baseOffset = -1; // rem
-    // Each character pushes the logo further (responsive scaling)
-    const charWidth = window.innerWidth < 768 ? 0.35 : window.innerWidth < 1024 ? 0.45 : 0.55; // rem per character
-    return baseOffset + (displayedText.length * charWidth);
-  };
-  
-  const calculateTextPadding = () => {
-    // Base padding to accommodate logo + dynamic spacing based on text length
-    const basePadding = 4; // rem
-    const charWidth = window.innerWidth < 768 ? 0.35 : window.innerWidth < 1024 ? 0.45 : 0.55; // rem per character
-    return basePadding + (displayedText.length * charWidth);
-  };
   
   useEffect(() => {
     const startTyping = () => {
       setDisplayedText("");
-      setLogoEntranceActive(false);
-      setLogoFloatActive(false);
-      setLogoDissolving(false);
-      setLogoHasBeenDissolved(false);
       // Notify parent that typing is restarting
       onTypingComplete?.(false);
-      
-      // Start logo entrance animation immediately
-      setTimeout(() => setLogoEntranceActive(true), 50);
       
       let currentIndex = 0;
       const timer = setInterval(() => {
@@ -68,23 +24,10 @@ export default function HeroSection({ onTypingComplete, onLogoDissolveComplete }
           setDisplayedText(fullText.slice(0, currentIndex));
           currentIndex++;
         } else if (currentIndex === fullText.length) {
-          // Display full text and trigger callbacks immediately when "S" appears
+          // Display full text and notify parent that typing is complete
           setDisplayedText(fullText.slice(0, currentIndex));
           clearInterval(timer);
-          // Start float animation exactly when "S" appears for perfect synchronization
-          setLogoFloatActive(true);
-          // Notify parent that typing is complete exactly when "S" shows
           onTypingComplete?.(true);
-          
-          // Start dissolve sequence after float has been active for 2 seconds
-          setTimeout(() => {
-            setLogoDissolving(true);
-            // Notify parent when dissolve completes (after 900ms animation duration)
-            setTimeout(() => {
-              setLogoHasBeenDissolved(true);
-              onLogoDissolveComplete?.();
-            }, 900);
-          }, 2000);
         }
       }, typingSpeed);
       return timer;
@@ -129,48 +72,10 @@ export default function HeroSection({ onTypingComplete, onLogoDissolveComplete }
       
       <div className="container mx-auto px-6 text-center relative z-10">
         <div className="max-w-4xl mx-auto">
-          {/* Main animated title with logo */}
+          {/* Main animated title */}
           <div className="relative">
-            {/* Animated Logo with "Pushed Along" Effect */}
-            {!logoHasBeenDissolved && (
-              <div 
-                className={`absolute top-1/2 -translate-y-1/2 z-10 brutalist-logo-shadow-themed logo-optimized pushed-logo ${
-                  logoEntranceActive ? 'logo-entrance' : 'transform -translate-x-full opacity-0'
-                } ${
-                  logoFloatActive && !logoDissolving ? 'logo-float' : ''
-                } ${
-                  logoDissolving ? 'logo-dissolve' : ''
-                }`}
-                style={{
-                  left: `${calculateLogoPosition()}rem`,
-                  transition: logoEntranceActive && displayedText.length > 0 ? 'left 120ms cubic-bezier(0.4, 0, 0.2, 1)' : 'none'
-                }}
-                data-testid="animated-logo"
-              >
-                {useCustomSVGLogo ? (
-                  <ZigzagLogo 
-                    size="medium" 
-                    className={`zigzag-logo logo-themed-${theme}`}
-                  />
-                ) : (
-                  <div className="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20">
-                    <img 
-                      src={getLogoAsset()} 
-                      alt="ZigZag Logo" 
-                      className={`w-full h-full object-contain logo-themed-${theme}`}
-                      style={{ imageRendering: 'crisp-edges' }}
-                    />
-                  </div>
-                )}
-              </div>
-            )}
-            
             <h1 
-              className="text-6xl md:text-8xl lg:text-9xl font-black mb-4 leading-tight" 
-              style={{
-                paddingLeft: `${calculateTextPadding()}rem`,
-                transition: 'padding-left 120ms ease-out'
-              }}
+              className="text-6xl md:text-8xl lg:text-9xl font-black mb-4 leading-tight"
               data-testid="hero-title"
             >
               <span className="text-gradient bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
