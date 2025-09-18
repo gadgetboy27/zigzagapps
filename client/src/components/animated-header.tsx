@@ -68,7 +68,7 @@ export default function AnimatedHeader({
       data-testid={dataTestId}
     >
       {hasAnimated ? text : displayedText}
-      {!hasAnimated && isVisible && <span className="typing-cursor text-primary">|</span>}
+      {!hasAnimated && isVisible && <span className="typing-cursor text-gradient bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">.</span>}
     </h2>
   );
 }
