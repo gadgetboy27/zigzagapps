@@ -8,7 +8,6 @@ import PremiumStore from "@/components/premium-store";
 import Testimonials from "@/components/testimonials";
 import ContactSection from "@/components/contact-section";
 import ThemeSelector from "@/components/theme-selector";
-import zigzagLogoOriginal from "@assets/zigzag-man_1758167236321.png";
 import zigzagLogoTshirt from "@assets/logo-t-shirt-zig-zag_1758166586152.png";
 import zigzagLogoRedBlack from "@assets/zigzag_redBlack_1758166406884.png";
 import { useTheme } from "@/contexts/theme-context";
@@ -16,7 +15,6 @@ import { useTheme } from "@/contexts/theme-context";
 export default function Home() {
   const { theme } = useTheme();
   const [isTypingComplete, setIsTypingComplete] = useState(false);
-  const [showNavbarLogo, setShowNavbarLogo] = useState(false);
   
   // Select appropriate navbar logo asset based on theme
   const getNavbarLogoAsset = () => {
@@ -41,17 +39,6 @@ export default function Home() {
   
   const handleTypingComplete = (isComplete: boolean) => {
     setIsTypingComplete(isComplete);
-    // Reset navbar logo when typing restarts
-    if (!isComplete) {
-      setShowNavbarLogo(false);
-    }
-  };
-
-  const handleLogoDissolveComplete = () => {
-    // Add a small delay before showing navbar logo for smoother transition
-    setTimeout(() => {
-      setShowNavbarLogo(true);
-    }, 300);
   };
 
   return (
@@ -63,23 +50,13 @@ export default function Home() {
       <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-background/80 border-b border-border">
         <nav className="container mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
-            <div className="text-xl font-bold text-primary font-mono relative" data-testid="logo">
-              {/* Default ZZ text */}
-              <span className={`text-gradient transition-all duration-500 ${
-                showNavbarLogo ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
-              }`}>ZZ</span>
-              
-              {/* Logo that appears when main logo dissolve completes */}
-              <div className={`absolute inset-0 flex items-center justify-center transition-all duration-700 ${
-                showNavbarLogo ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-50 translate-y-2'
-              }`}>
-                <img 
-                  src={getNavbarLogoAsset()} 
-                  alt="ZigZag Logo" 
-                  className={`w-8 h-8 object-contain navbar-logo-glow logo-themed-${theme}`}
-                  style={{ imageRendering: 'crisp-edges' }}
-                />
-              </div>
+            <div className="flex items-center" data-testid="logo">
+              <img 
+                src={getNavbarLogoAsset()} 
+                alt="ZigZag Logo" 
+                className="w-5 h-5 object-contain"
+                style={{ imageRendering: 'crisp-edges' }}
+              />
             </div>
             <div className="hidden md:flex space-x-8">
               <a href="#about" className="hover:text-primary transition-colors" data-testid="nav-about">About</a>
@@ -104,7 +81,7 @@ export default function Home() {
         </nav>
       </header>
 
-      <HeroSection onTypingComplete={handleTypingComplete} onLogoDissolveComplete={handleLogoDissolveComplete} />
+      <HeroSection onTypingComplete={handleTypingComplete} />
       <AboutSection />
       <AppsShowcase />
       <PremiumStore />
