@@ -55,7 +55,7 @@ export default function Home() {
               <img 
                 src={getNavbarLogoAsset()} 
                 alt="ZigZag Logo" 
-                className="w-15 h-15 object-contain"
+                className="h-full w-auto object-contain"
                 style={{ imageRendering: 'crisp-edges' }}
               />
             </div>
