@@ -19,11 +19,11 @@ export default function Home() {
   // Select appropriate navbar logo asset based on theme
   const getNavbarLogoAsset = () => {
     if (theme === 'light') {
-      return zigzagLogoTshirt; // Best for light theme
+      return zigzagLogoRedBlack; // Red/black version for light theme
     } else if (theme === 'dark') {
-      return zigzagLogoRedBlack; // Red/black version for dark theme  
+      return zigzagLogoTshirt; // T-shirt version for dark theme  
     } else { // blue theme
-      return zigzagLogoRedBlack; // Red/black also works well for blue theme
+      return zigzagLogoTshirt; // T-shirt version also works well for blue theme
     }
   };
   
@@ -54,7 +54,7 @@ export default function Home() {
               <img 
                 src={getNavbarLogoAsset()} 
                 alt="ZigZag Logo" 
-                className="w-5 h-5 object-contain"
+                className="w-10 h-10 object-contain"
                 style={{ imageRendering: 'crisp-edges' }}
               />
             </div>
