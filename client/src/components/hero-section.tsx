@@ -11,6 +11,7 @@ export default function HeroSection({ onTypingComplete, onLogoDissolveComplete }
   const [logoEntranceActive, setLogoEntranceActive] = useState(false);
   const [logoFloatActive, setLogoFloatActive] = useState(false);
   const [logoDissolving, setLogoDissolving] = useState(false);
+  const [logoHasBeenDissolved, setLogoHasBeenDissolved] = useState(false);
   const fullText = "ZIGZAG APPS";
   const typingSpeed = 120; // ms per character
   
@@ -20,6 +21,7 @@ export default function HeroSection({ onTypingComplete, onLogoDissolveComplete }
       setLogoEntranceActive(false);
       setLogoFloatActive(false);
       setLogoDissolving(false);
+      setLogoHasBeenDissolved(false);
       // Notify parent that typing is restarting
       onTypingComplete?.(false);
       
@@ -45,6 +47,7 @@ export default function HeroSection({ onTypingComplete, onLogoDissolveComplete }
             setLogoDissolving(true);
             // Notify parent when dissolve completes (after 900ms animation duration)
             setTimeout(() => {
+              setLogoHasBeenDissolved(true);
               onLogoDissolveComplete?.();
             }, 900);
           }, 2000);
@@ -95,22 +98,24 @@ export default function HeroSection({ onTypingComplete, onLogoDissolveComplete }
           {/* Main animated title with logo */}
           <div className="relative">
             {/* Animated Logo */}
-            <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 z-10 brutalist-logo-shadow logo-optimized ${
-                logoEntranceActive ? 'logo-entrance' : 'transform -translate-x-full opacity-0'
-              } ${
-                logoFloatActive && !logoDissolving ? 'logo-float' : ''
-              } ${
-                logoDissolving ? 'logo-dissolve' : ''
-              }`}
-              data-testid="animated-logo"
-            >
-              <img 
-                src={zigzagLogo} 
-                alt="ZigZag Logo" 
-                className="w-full h-full object-contain"
-                style={{ imageRendering: 'crisp-edges' }}
-              />
-            </div>
+            {!logoHasBeenDissolved && (
+              <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 z-10 brutalist-logo-shadow logo-optimized ${
+                  logoEntranceActive ? 'logo-entrance' : 'transform -translate-x-full opacity-0'
+                } ${
+                  logoFloatActive && !logoDissolving ? 'logo-float' : ''
+                } ${
+                  logoDissolving ? 'logo-dissolve' : ''
+                }`}
+                data-testid="animated-logo"
+              >
+                <img 
+                  src={zigzagLogo} 
+                  alt="ZigZag Logo" 
+                  className="w-full h-full object-contain"
+                  style={{ imageRendering: 'crisp-edges' }}
+                />
+              </div>
+            )}
             
             <h1 className="text-6xl md:text-8xl lg:text-9xl font-black mb-4 leading-tight pl-16 md:pl-20 lg:pl-24" data-testid="hero-title">
               <span className="text-gradient bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
