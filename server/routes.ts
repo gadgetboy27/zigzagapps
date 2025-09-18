@@ -167,6 +167,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // TEST ROUTE - Simple demo proxy test
+  app.get("/api/demo-proxy-test", (req, res) => {
+    console.log('🟢 TEST ROUTE HIT!');
+    res.json({ message: "Demo proxy test route working!", url: req.url, path: req.path });
+  });
+
+  // DEBUG ROUTE - Check IP and User Agent
+  app.get("/api/debug-session", (req, res) => {
+    const clientIP = req.ip || req.connection.remoteAddress || "unknown";
+    const userAgent = req.get("User-Agent") || "";
+    res.json({ 
+      clientIP, 
+      userAgent, 
+      headers: req.headers,
+      realIP: req.connection.remoteAddress,
+      socketIP: req.socket?.remoteAddress
+    });
+  });
+
+  // BYPASS ROUTE - Test proxy without session validation
+  app.use("/api/proxy-bypass", async (req, res, next) => {
+    console.log('🔥 BYPASS PROXY TEST!');
+    try {
+      // Hard-coded test with Asset Timer
+      const demoUrl = "https://asset-timer.replit.app";
+      const targetUrl = new URL(demoUrl);
+      
+      console.log('  Target URL:', targetUrl.origin);
+      
+      // Create simple proxy without session validation
+      const proxyOptions = {
+        target: targetUrl.origin,
+        changeOrigin: true,
+        secure: true,
+        on: {
+          proxyReq: (proxyReq: any, req: any) => {
+            console.log('  🚀 BYPASS REQUEST to:', `${targetUrl.origin}${proxyReq.path}`);
+          },
+          proxyRes: (proxyRes: any, req: any, res: any) => {
+            console.log('  📥 BYPASS RESPONSE:', proxyRes.statusCode, proxyRes.headers['content-type']);
+          }
+        }
+      };
+      
+      const proxy = createProxyMiddleware(proxyOptions);
+      proxy(req, res, next);
+    } catch (error) {
+      console.error('❌ Bypass proxy error:', error);
+      res.status(500).json({ message: "Bypass proxy failed", error: error.message });
+    }
+  });
+
   // Generate demo access token
   app.post("/api/demo-access/:appId", demoAccessLimiter, async (req, res) => {
     try {
@@ -246,15 +298,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Secure demo proxy with token validation on every request
-  app.use("/api/demo-proxy/:token/*?", async (req, res, next) => {
+  app.use("/api/demo-proxy/:token", async (req, res, next) => {
+    console.log('🚨 PROXY HANDLER REACHED! URL:', req.url, 'Path:', req.path);
     try {
       const { token } = req.params;
-      const targetPath = (req.params as any)['0'] || '';
+      // Extract any additional path after the token
+      const tokenPath = `/api/demo-proxy/${token}`;
+      const targetPath = req.path.replace(tokenPath, '') || '/';
 
       // Validate demo session with IP/UA binding on every request
       const clientIP = req.ip || req.connection.remoteAddress || "unknown";
       const userAgent = req.get("User-Agent") || "";
+      
+      // DEBUG: Log validation inputs
+      console.log('  🔒 SESSION VALIDATION:');
+      console.log('    Token:', token);
+      console.log('    Client IP:', clientIP);
+      console.log('    User Agent:', userAgent);
+      
       const validation = await storage.validateDemoSession(token, clientIP, userAgent);
+      
+      // DEBUG: Log validation result
+      console.log('  📋 VALIDATION RESULT:');
+      console.log('    Valid:', validation.valid);
+      console.log('    Error:', validation.error);
+      console.log('    Session exists:', !!validation.session);
+      console.log('    App exists:', !!validation.app);
       
       if (!validation.valid || !validation.session || !validation.app) {
         // Handle different validation failure scenarios
@@ -299,21 +368,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const demoUrl = validation.app.demoUrl!;
       const targetUrl = new URL(demoUrl);
       
-      // Create secure reverse proxy with comprehensive security and HTML rewriting
+      // DEBUG: Log the URLs and paths being processed
+      console.log('🔍 DEMO PROXY DEBUG:');
+      console.log('  App ID:', validation.app.id);
+      console.log('  Demo URL:', demoUrl);
+      console.log('  Target URL origin:', targetUrl.origin);
+      console.log('  Target URL pathname:', targetUrl.pathname);
+      console.log('  Original request path:', req.path);
+      console.log('  Request URL:', req.url);
+      
+      // Create secure reverse proxy with simplified pathRewrite
       const proxyOptions: Options = {
         target: targetUrl.origin,
         changeOrigin: true,
         secure: true,
         followRedirects: true,
-        selfHandleResponse: true, // Critical: Handle response manually for proper URL rewriting
+        selfHandleResponse: false, // Simplified: Let proxy handle response automatically
         pathRewrite: (path: string) => {
           // Extract the path after the token
           const tokenPath = `/api/demo-proxy/${token}`;
-          const relativePath = path.replace(tokenPath, '') || '/';
-          return targetUrl.pathname + (relativePath === '/' ? '' : relativePath);
+          let relativePath = path.replace(tokenPath, '') || '/';
+          
+          // DEBUG: Log path rewriting
+          console.log('  🔄 PATH REWRITE:');
+          console.log('    Original path:', path);
+          console.log('    Token path:', tokenPath);
+          console.log('    Extracted relative path:', relativePath);
+          
+          // For external demos like https://asset-timer.replit.app
+          // We want to return the relativePath directly, not append to targetUrl.pathname
+          // because targetUrl.pathname for external demos is usually '/'
+          const finalPath = relativePath;
+          console.log('    Final rewritten path:', finalPath);
+          
+          return finalPath;
         },
         on: {
           proxyReq: (proxyReq: any, req: IncomingMessage) => {
+            // DEBUG: Log the final request being made
+            console.log('  🚀 PROXY REQUEST:');
+            console.log('    Target host:', proxyReq.getHeader('host'));
+            console.log('    Request path:', proxyReq.path);
+            console.log('    Full target URL:', `${targetUrl.origin}${proxyReq.path}`);
+            
             // Remove token from headers to prevent exposure
             proxyReq.removeHeader('authorization');
             proxyReq.removeHeader('x-demo-session');
@@ -323,75 +420,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
             proxyReq.setHeader('User-Agent', 'ZIGZAG-DEMO-PROXY/1.0');
           },
           proxyRes: (proxyRes: any, req: IncomingMessage, res: ServerResponse) => {
+            // DEBUG: Log the response
+            console.log('  📥 PROXY RESPONSE:');
+            console.log('    Status:', proxyRes.statusCode);
+            console.log('    Content-Type:', proxyRes.headers['content-type']);
+            console.log('    Content-Length:', proxyRes.headers['content-length']);
+            
             // Security: Remove/sanitize dangerous headers
             delete proxyRes.headers['x-original-url'];
             delete proxyRes.headers['x-forwarded-host'];
             delete proxyRes.headers['x-forwarded-for'];
             delete proxyRes.headers['set-cookie']; // Strip cookies to prevent security issues
             
-            // Sanitize Location header to prevent URL leakage
-            if (proxyRes.headers.location) {
-              const location = proxyRes.headers.location;
-              if (location.startsWith(targetUrl.origin)) {
-                proxyRes.headers.location = location.replace(targetUrl.origin, `/api/demo-proxy/${token}`);
-              }
-            }
-            
-            // Disable caching on proxy responses
-            proxyRes.headers['cache-control'] = 'no-cache, no-store, must-revalidate';
-            proxyRes.headers['pragma'] = 'no-cache';
-            proxyRes.headers['expires'] = '0';
-            
             // Add security headers
             proxyRes.headers['X-Content-Type-Options'] = 'nosniff';
             proxyRes.headers['X-Frame-Options'] = 'SAMEORIGIN';
             proxyRes.headers['X-Robots-Tag'] = 'noindex, nofollow';
-            
-            // Set response status and headers explicitly
-            res.statusCode = proxyRes.statusCode || 200;
-            Object.keys(proxyRes.headers).forEach(key => {
-              res.setHeader(key, proxyRes.headers[key]!);
-            });
-            
-            // Buffer and process response content
-            let body = Buffer.alloc(0);
-            
-            proxyRes.on('data', (chunk: Buffer) => {
-              body = Buffer.concat([body, chunk]);
-            });
-            
-            proxyRes.on('end', () => {
-              let content = body;
-              const contentType = proxyRes.headers['content-type'] || '';
-              
-              // Comprehensive URL rewriting for HTML content
-              if (contentType.includes('text/html') || contentType.includes('application/javascript') || contentType.includes('text/css')) {
-                let bodyStr = content.toString('utf8');
-                
-                // Rewrite absolute URLs to use our proxy
-                const originRegex = new RegExp(targetUrl.origin.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
-                bodyStr = bodyStr.replace(originRegex, `/api/demo-proxy/${token}`);
-                
-                // Rewrite protocol-relative URLs
-                const protocolRelativeRegex = new RegExp(`//${targetUrl.hostname}`, 'g');
-                bodyStr = bodyStr.replace(protocolRelativeRegex, `/api/demo-proxy/${token}`);
-                
-                // Rewrite root-relative URLs for same domain assets
-                if (contentType.includes('text/html')) {
-                  bodyStr = bodyStr.replace(/(?:src|href|action)="\//g, `$&api/demo-proxy/${token}/`);
-                  bodyStr = bodyStr.replace(/(?:src|href|action)='\//g, `$&api/demo-proxy/${token}/`);
-                }
-                
-                content = Buffer.from(bodyStr, 'utf8');
-              }
-              
-              // Set proper content length
-              res.setHeader('Content-Length', content.length);
-              res.end(content);
-            });
           },
           error: (err: any, req: IncomingMessage, res: any) => {
-            console.error('Proxy error:', err);
+            console.error('❌ Proxy error:', err);
             if (res && !res.headersSent && typeof res.status === 'function') {
               res.status(502).json({ 
                 message: 'Demo content temporarily unavailable',
