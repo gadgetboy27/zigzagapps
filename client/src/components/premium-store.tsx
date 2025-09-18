@@ -100,14 +100,33 @@ export default function PremiumStore() {
                     <li key="default-3" className="flex items-center"><i className="fas fa-check text-accent mr-2"></i> Lifetime updates</li>,
                   ]}
                 </ul>
-                <Link href={`/checkout/${app.id}`}>
-                  <button 
-                    className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-bold hover:bg-primary/90 transition-colors"
-                    data-testid={`premium-app-buy-${app.id}`}
-                  >
-                    <i className="fas fa-shopping-cart mr-2"></i>BUY NOW
-                  </button>
-                </Link>
+{/* High-value premium app - Instant Connect */}
+                {app.price && parseFloat(app.price) >= 100000 ? (
+                  <div className="space-y-3">
+                    <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black p-3 rounded-lg text-center font-bold">
+                      <i className="fas fa-crown mr-2"></i>ENTERPRISE SOLUTION
+                    </div>
+                    <a 
+                      href="#contact"
+                      className="w-full bg-gradient-to-r from-primary to-secondary text-white py-4 rounded-lg font-bold hover:from-primary/90 hover:to-secondary/90 transition-all transform hover:scale-105 flex items-center justify-center"
+                      data-testid={`premium-app-contact-${app.id}`}
+                    >
+                      <i className="fas fa-phone mr-2"></i>INSTANT CONNECT
+                    </a>
+                    <p className="text-xs text-muted-foreground text-center">
+                      Custom pricing • Enterprise licensing • Direct consultation
+                    </p>
+                  </div>
+                ) : (
+                  <Link href={`/checkout/${app.id}`}>
+                    <button 
+                      className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-bold hover:bg-primary/90 transition-colors"
+                      data-testid={`premium-app-buy-${app.id}`}
+                    >
+                      <i className="fas fa-shopping-cart mr-2"></i>BUY NOW
+                    </button>
+                  </Link>
+                )}
               </div>
             </div>
           ))}
