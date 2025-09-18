@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
-import zigzagLogo from "@assets/zigzag-man_1758167236321.png";
+import zigzagLogoOriginal from "@assets/zigzag-man_1758167236321.png";
+import zigzagLogoTshirt from "@assets/logo-t-shirt-zig-zag_1758166586152.png";
+import zigzagLogoRedBlack from "@assets/zigzag_redBlack_1758166406884.png";
+import { useTheme } from "@/contexts/theme-context";
 
 interface HeroSectionProps {
   onTypingComplete?: (isComplete: boolean) => void;
@@ -7,6 +10,7 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ onTypingComplete, onLogoDissolveComplete }: HeroSectionProps) {
+  const { theme } = useTheme();
   const [displayedText, setDisplayedText] = useState("");
   const [logoEntranceActive, setLogoEntranceActive] = useState(false);
   const [logoFloatActive, setLogoFloatActive] = useState(false);
@@ -14,6 +18,33 @@ export default function HeroSection({ onTypingComplete, onLogoDissolveComplete }
   const [logoHasBeenDissolved, setLogoHasBeenDissolved] = useState(false);
   const fullText = "ZIGZAG APPS";
   const typingSpeed = 120; // ms per character
+  
+  // Calculate logo positioning and select appropriate logo asset based on theme
+  const getLogoAsset = () => {
+    if (theme === 'light') {
+      return zigzagLogoTshirt; // Best for light theme
+    } else if (theme === 'dark') {
+      return zigzagLogoRedBlack; // Red/black version for dark theme
+    } else { // blue theme
+      return zigzagLogoRedBlack; // Red/black also works well for blue theme
+    }
+  };
+  
+  // Dynamic positioning calculation for "pushed along" effect
+  const calculateLogoPosition = () => {
+    // Base position starts before first character
+    const baseOffset = -1; // rem
+    // Each character pushes the logo further (responsive scaling)
+    const charWidth = window.innerWidth < 768 ? 0.35 : window.innerWidth < 1024 ? 0.45 : 0.55; // rem per character
+    return baseOffset + (displayedText.length * charWidth);
+  };
+  
+  const calculateTextPadding = () => {
+    // Base padding to accommodate logo + dynamic spacing based on text length
+    const basePadding = 4; // rem
+    const charWidth = window.innerWidth < 768 ? 0.35 : window.innerWidth < 1024 ? 0.45 : 0.55; // rem per character
+    return basePadding + (displayedText.length * charWidth);
+  };
   
   useEffect(() => {
     const startTyping = () => {
@@ -97,27 +128,39 @@ export default function HeroSection({ onTypingComplete, onLogoDissolveComplete }
         <div className="max-w-4xl mx-auto">
           {/* Main animated title with logo */}
           <div className="relative">
-            {/* Animated Logo */}
+            {/* Animated Logo with "Pushed Along" Effect */}
             {!logoHasBeenDissolved && (
-              <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 z-10 brutalist-logo-shadow logo-optimized ${
+              <div 
+                className={`absolute top-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 z-10 brutalist-logo-shadow-themed logo-optimized pushed-logo ${
                   logoEntranceActive ? 'logo-entrance' : 'transform -translate-x-full opacity-0'
                 } ${
                   logoFloatActive && !logoDissolving ? 'logo-float' : ''
                 } ${
                   logoDissolving ? 'logo-dissolve' : ''
                 }`}
+                style={{
+                  left: `${calculateLogoPosition()}rem`,
+                  transition: logoEntranceActive && displayedText.length > 0 ? 'left 120ms cubic-bezier(0.4, 0, 0.2, 1)' : 'none'
+                }}
                 data-testid="animated-logo"
               >
                 <img 
-                  src={zigzagLogo} 
+                  src={getLogoAsset()} 
                   alt="ZigZag Logo" 
-                  className="w-full h-full object-contain"
+                  className={`w-full h-full object-contain logo-themed-${theme}`}
                   style={{ imageRendering: 'crisp-edges' }}
                 />
               </div>
             )}
             
-            <h1 className="text-6xl md:text-8xl lg:text-9xl font-black mb-4 leading-tight pl-16 md:pl-20 lg:pl-24" data-testid="hero-title">
+            <h1 
+              className="text-6xl md:text-8xl lg:text-9xl font-black mb-4 leading-tight" 
+              style={{
+                paddingLeft: `${calculateTextPadding()}rem`,
+                transition: 'padding-left 120ms ease-out'
+              }}
+              data-testid="hero-title"
+            >
               <span className="text-gradient bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
                 {displayedText}
               </span>

@@ -8,11 +8,26 @@ import PremiumStore from "@/components/premium-store";
 import Testimonials from "@/components/testimonials";
 import ContactSection from "@/components/contact-section";
 import ThemeSelector from "@/components/theme-selector";
-import zigzagLogo from "@assets/zigzag-man_1758167236321.png";
+import zigzagLogoOriginal from "@assets/zigzag-man_1758167236321.png";
+import zigzagLogoTshirt from "@assets/logo-t-shirt-zig-zag_1758166586152.png";
+import zigzagLogoRedBlack from "@assets/zigzag_redBlack_1758166406884.png";
+import { useTheme } from "@/contexts/theme-context";
 
 export default function Home() {
+  const { theme } = useTheme();
   const [isTypingComplete, setIsTypingComplete] = useState(false);
   const [showNavbarLogo, setShowNavbarLogo] = useState(false);
+  
+  // Select appropriate navbar logo asset based on theme
+  const getNavbarLogoAsset = () => {
+    if (theme === 'light') {
+      return zigzagLogoTshirt; // Best for light theme
+    } else if (theme === 'dark') {
+      return zigzagLogoRedBlack; // Red/black version for dark theme  
+    } else { // blue theme
+      return zigzagLogoRedBlack; // Red/black also works well for blue theme
+    }
+  };
   
   useEffect(() => {
     // SEO and document setup
@@ -59,9 +74,9 @@ export default function Home() {
                 showNavbarLogo ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-50 translate-y-2'
               }`}>
                 <img 
-                  src={zigzagLogo} 
+                  src={getNavbarLogoAsset()} 
                   alt="ZigZag Logo" 
-                  className="w-8 h-8 object-contain navbar-logo-glow"
+                  className={`w-8 h-8 object-contain navbar-logo-glow logo-themed-${theme}`}
                   style={{ imageRendering: 'crisp-edges' }}
                 />
               </div>

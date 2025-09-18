@@ -238,19 +238,43 @@
     }
   }
 
-  /* Brutalist shadow enhancement for logo - theme-aware visibility */
-  .brutalist-logo-shadow {
+  /* Theme-aware brutalist shadow for logo - optimized for different assets */
+  .brutalist-logo-shadow-themed {
     filter: drop-shadow(4px 4px 0px hsl(var(--primary))) drop-shadow(2px 2px 0px hsl(var(--secondary)));
   }
 
-  /* Enhanced visibility for dark themes */
-  .dark .brutalist-logo-shadow,
-  .blue .brutalist-logo-shadow {
+  /* Light theme logo styling - use transparent logo asset */
+  .logo-themed-light {
+    filter: drop-shadow(2px 2px 4px hsl(var(--primary) / 0.3));
+  }
+
+  /* Dark theme logo styling - enhanced visibility for red/black logo */
+  .logo-themed-dark {
     filter: 
-      drop-shadow(4px 4px 0px hsl(var(--primary))) 
-      drop-shadow(2px 2px 0px hsl(var(--secondary)))
-      drop-shadow(0px 0px 8px hsl(var(--primary) / 0.6))
-      invert(1);
+      drop-shadow(3px 3px 6px hsl(var(--primary) / 0.4))
+      drop-shadow(1px 1px 2px hsl(var(--secondary) / 0.3))
+      brightness(1.1)
+      contrast(1.2);
+  }
+
+  /* Blue theme logo styling - optimized for blue backgrounds */
+  .logo-themed-blue {
+    filter: 
+      drop-shadow(3px 3px 6px hsl(var(--primary) / 0.5))
+      drop-shadow(1px 1px 2px rgba(255, 255, 255, 0.2))
+      brightness(1.15)
+      contrast(1.1);
+  }
+
+  /* Smooth logo movement for "pushed along" effect */
+  .pushed-logo {
+    will-change: left;
+    transition: left 120ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Prevent transition during entrance animation */
+  .pushed-logo.logo-entrance {
+    transition: none;
   }
 
   /* Text gradient enhancement */
@@ -275,32 +299,50 @@
     transform-style: preserve-3d;
   }
 
-  /* Navbar logo animations and effects - theme-aware visibility */
+  /* Theme-aware navbar logo styling */
   .navbar-logo-glow {
-    filter: drop-shadow(2px 2px 4px hsl(var(--primary) / 0.3));
     transition: filter 0.3s ease, transform 0.3s ease;
   }
 
-  .navbar-logo-glow:hover {
+  /* Light theme navbar logo */
+  .light .navbar-logo-glow {
+    filter: drop-shadow(2px 2px 4px hsl(var(--primary) / 0.3));
+  }
+
+  .light .navbar-logo-glow:hover {
     filter: drop-shadow(2px 2px 8px hsl(var(--primary) / 0.5));
     transform: scale(1.1);
   }
 
-  /* Enhanced navbar logo visibility for dark themes */
-  .dark .navbar-logo-glow,
-  .blue .navbar-logo-glow {
+  /* Dark theme navbar logo */
+  .dark .navbar-logo-glow {
     filter: 
-      drop-shadow(2px 2px 4px hsl(var(--primary) / 0.3))
-      drop-shadow(0px 0px 6px hsl(var(--primary) / 0.4))
-      invert(1);
+      drop-shadow(2px 2px 4px hsl(var(--primary) / 0.4))
+      drop-shadow(0px 0px 6px hsl(var(--primary) / 0.3))
+      brightness(1.1);
   }
 
-  .dark .navbar-logo-glow:hover,
+  .dark .navbar-logo-glow:hover {
+    filter: 
+      drop-shadow(2px 2px 8px hsl(var(--primary) / 0.6))
+      drop-shadow(0px 0px 12px hsl(var(--primary) / 0.4))
+      brightness(1.15);
+    transform: scale(1.1);
+  }
+
+  /* Blue theme navbar logo */
+  .blue .navbar-logo-glow {
+    filter: 
+      drop-shadow(2px 2px 4px hsl(var(--primary) / 0.5))
+      drop-shadow(0px 0px 8px rgba(255, 255, 255, 0.2))
+      brightness(1.1);
+  }
+
   .blue .navbar-logo-glow:hover {
     filter: 
-      drop-shadow(2px 2px 8px hsl(var(--primary) / 0.5))
-      drop-shadow(0px 0px 12px hsl(var(--primary) / 0.6))
-      invert(1);
+      drop-shadow(2px 2px 8px hsl(var(--primary) / 0.7))
+      drop-shadow(0px 0px 16px rgba(255, 255, 255, 0.3))
+      brightness(1.15);
     transform: scale(1.1);
   }
 
@@ -323,6 +365,10 @@
       opacity: 0;
       transform: scale(1) translateY(0px);
       filter: blur(0px);
+    }
+
+    .pushed-logo {
+      transition: none !important;
     }
 
     .typing-cursor {
