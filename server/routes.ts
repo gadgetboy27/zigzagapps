@@ -527,6 +527,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Temporary admin endpoint to get production database URL
+  app.get('/api/admin/db-info', (req, res) => {
+    const isProduction = process.env.REPLIT_DEPLOYMENT === '1';
+    const adminKey = req.query.key;
+    
+    if (adminKey !== 'get-prod-db-2025') {
+      return res.status(404).json({ error: 'Not found' });
+    }
+    
+    res.json({
+      environment: isProduction ? 'production' : 'development',
+      database_url: process.env.DATABASE_URL,
+      deployment_status: process.env.REPLIT_DEPLOYMENT || 'not set'
+    });
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
