@@ -81,7 +81,7 @@ export default function HeroSection({ onTypingComplete }: HeroSectionProps) {
               <span className="text-gradient bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
                 {displayedText}
               </span>
-              <span className="typing-cursor text-primary">|</span>
+              <span className="typing-cursor text-primary">.</span>
             </h1>
           </div>
           
