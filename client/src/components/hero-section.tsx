@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useTheme } from "@/contexts/theme-context";
+import React from 'react';
+import { useState, useEffect } from "react";
 
 interface HeroSectionProps {
   onTypingComplete?: (isComplete: boolean) => void;
 }
 
 export default function HeroSection({ onTypingComplete }: HeroSectionProps) {
-  const { theme } = useTheme();
   const [displayedText, setDisplayedText] = useState("");
   const fullText = "ZIGZAG APPS";
   const typingSpeed = 120; // ms per character

@@ -1,16 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from 'react';
+import { useState, useEffect, useRef } from "react";
 
 interface AnimatedHeaderProps {
   text: string;
   className?: string;
-  delay?: number;
   "data-testid"?: string;
 }
 
 export default function AnimatedHeader({ 
   text, 
   className = "", 
-  delay = 10000,
   "data-testid": dataTestId 
 }: AnimatedHeaderProps) {
   const [displayedText, setDisplayedText] = useState("");
