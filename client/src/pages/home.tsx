@@ -10,6 +10,7 @@ import ContactSection from "@/components/contact-section";
 import ThemeSelector from "@/components/theme-selector";
 import zigzagLogoTshirt from "@assets/logo-t-shirt-zig-zag_1758166586152.png";
 import zigzagLogoRedBlack from "@assets/zigzag_redBlack_1758166406884.png";
+import newDarkLogo from "@assets/zig-zag-man-black-bg_1758180362731.jpg";
 import { useTheme } from "@/contexts/theme-context";
 
 export default function Home() {
@@ -21,7 +22,7 @@ export default function Home() {
     if (theme === 'light') {
       return zigzagLogoRedBlack; // Red/black version for light theme
     } else if (theme === 'dark') {
-      return zigzagLogoTshirt; // T-shirt version for dark theme  
+      return newDarkLogo; // New dark mode logo
     } else { // blue theme
       return zigzagLogoTshirt; // T-shirt version also works well for blue theme
     }
@@ -54,7 +55,7 @@ export default function Home() {
               <img 
                 src={getNavbarLogoAsset()} 
                 alt="ZigZag Logo" 
-                className="w-10 h-10 object-contain"
+                className="w-15 h-15 object-contain"
                 style={{ imageRendering: 'crisp-edges' }}
               />
             </div>
