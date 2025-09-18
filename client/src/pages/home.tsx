@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CustomCursor from "@/components/custom-cursor";
 import NavigationDots from "@/components/navigation-dots";
 import HeroSection from "@/components/hero-section";
@@ -8,8 +8,11 @@ import PremiumStore from "@/components/premium-store";
 import Testimonials from "@/components/testimonials";
 import ContactSection from "@/components/contact-section";
 import ThemeSelector from "@/components/theme-selector";
+import zigzagLogo from "@assets/zigzag-man_1758167236321.png";
 
 export default function Home() {
+  const [isTypingComplete, setIsTypingComplete] = useState(false);
+  
   useEffect(() => {
     // SEO and document setup
     document.title = "ZIGZAG APPS - Henry Peti | Modern App Developer & Entrepreneur | Portfolio & App Store";
@@ -19,6 +22,10 @@ export default function Home() {
       metaDescription.setAttribute('content', 'ZIGZAG APPS by Henry Peti - Software Engineer, App Developer & Entrepreneur. Discover cutting-edge mobile apps, web applications, and digital solutions. Buy premium apps and explore innovative development projects.');
     }
   }, []);
+  
+  const handleTypingComplete = (isComplete: boolean) => {
+    setIsTypingComplete(isComplete);
+  };
 
   return (
     <div className="scroll-snap">
@@ -29,8 +36,23 @@ export default function Home() {
       <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-background/80 border-b border-border">
         <nav className="container mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
-            <div className="text-xl font-bold text-primary font-mono" data-testid="logo">
-              <span className="text-gradient">ZZ</span>
+            <div className="text-xl font-bold text-primary font-mono relative" data-testid="logo">
+              {/* Default ZZ text */}
+              <span className={`text-gradient transition-all duration-500 ${
+                isTypingComplete ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
+              }`}>ZZ</span>
+              
+              {/* Logo that appears when typing completes */}
+              <div className={`absolute inset-0 flex items-center justify-center transition-all duration-700 ${
+                isTypingComplete ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-50 translate-y-2'
+              }`}>
+                <img 
+                  src={zigzagLogo} 
+                  alt="ZigZag Logo" 
+                  className="w-8 h-8 object-contain navbar-logo-glow"
+                  style={{ imageRendering: 'crisp-edges' }}
+                />
+              </div>
             </div>
             <div className="hidden md:flex space-x-8">
               <a href="#about" className="hover:text-primary transition-colors" data-testid="nav-about">About</a>
@@ -55,7 +77,7 @@ export default function Home() {
         </nav>
       </header>
 
-      <HeroSection />
+      <HeroSection onTypingComplete={handleTypingComplete} />
       <AboutSection />
       <AppsShowcase />
       <PremiumStore />

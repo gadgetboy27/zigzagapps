@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
-import zigzagLogo from "@assets/logo-t-shirt-zig-zag_1758166586152.png";
+import zigzagLogo from "@assets/zigzag-man_1758167236321.png";
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  onTypingComplete?: (isComplete: boolean) => void;
+}
+
+export default function HeroSection({ onTypingComplete }: HeroSectionProps) {
   const [displayedText, setDisplayedText] = useState("");
   const [logoEntranceActive, setLogoEntranceActive] = useState(false);
   const [logoFloatActive, setLogoFloatActive] = useState(false);
@@ -13,19 +17,25 @@ export default function HeroSection() {
       setDisplayedText("");
       setLogoEntranceActive(false);
       setLogoFloatActive(false);
+      // Notify parent that typing is restarting
+      onTypingComplete?.(false);
       
       // Start logo entrance animation immediately
       setTimeout(() => setLogoEntranceActive(true), 50);
       
       let currentIndex = 0;
       const timer = setInterval(() => {
-        if (currentIndex <= fullText.length) {
+        if (currentIndex < fullText.length) {
           setDisplayedText(fullText.slice(0, currentIndex));
           currentIndex++;
-        } else {
+        } else if (currentIndex === fullText.length) {
+          // Display full text and trigger callbacks immediately when "S" appears
+          setDisplayedText(fullText.slice(0, currentIndex));
           clearInterval(timer);
-          // Start float animation when typing completes for perfect synchronization
+          // Start float animation exactly when "S" appears for perfect synchronization
           setLogoFloatActive(true);
+          // Notify parent that typing is complete exactly when "S" shows
+          onTypingComplete?.(true);
         }
       }, typingSpeed);
       return timer;
@@ -73,16 +83,20 @@ export default function HeroSection() {
           {/* Main animated title with logo */}
           <div className="relative">
             {/* Animated Logo */}
-            <img 
-              src={zigzagLogo} 
-              alt="ZigZag Logo" 
-              className={`absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 z-10 brutalist-logo-shadow logo-optimized ${
+            <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 z-10 brutalist-logo-shadow logo-optimized ${
                 logoEntranceActive ? 'logo-entrance' : 'transform -translate-x-full opacity-0'
               } ${
                 logoFloatActive ? 'logo-float' : ''
               }`}
               data-testid="animated-logo"
-            />
+            >
+              <img 
+                src={zigzagLogo} 
+                alt="ZigZag Logo" 
+                className="w-full h-full object-contain"
+                style={{ imageRendering: 'crisp-edges' }}
+              />
+            </div>
             
             <h1 className="text-6xl md:text-8xl lg:text-9xl font-black mb-4 leading-tight pl-16 md:pl-20 lg:pl-24" data-testid="hero-title">
               <span className="text-gradient bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
