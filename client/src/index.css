@@ -214,6 +214,16 @@
     animation: logoSlideIn 1200ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 
+  /* Custom ZigZag Logo */
+  .zigzag-logo {
+    will-change: transform;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .zigzag-logo:hover {
+    transform: scale(1.05);
+  }
+
   .logo-float {
     animation: logoFloat 3s ease-in-out infinite;
   }
@@ -354,7 +364,14 @@
       opacity: 1;
       filter: blur(0px);
     }
-
+    
+    .zigzag-logo {
+      transition: none;
+    }
+    .zigzag-logo:hover {
+      transform: none;
+    }
+    
     .logo-float {
       animation: none;
       transform: translateY(0px) rotate(0deg);

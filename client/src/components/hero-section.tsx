@@ -3,6 +3,7 @@ import zigzagLogoOriginal from "@assets/zigzag-man_1758167236321.png";
 import zigzagLogoTshirt from "@assets/logo-t-shirt-zig-zag_1758166586152.png";
 import zigzagLogoRedBlack from "@assets/zigzag_redBlack_1758166406884.png";
 import { useTheme } from "@/contexts/theme-context";
+import ZigzagLogo from "@/components/ZigzagLogo";
 
 interface HeroSectionProps {
   onTypingComplete?: (isComplete: boolean) => void;
@@ -16,6 +17,8 @@ export default function HeroSection({ onTypingComplete, onLogoDissolveComplete }
   const [logoFloatActive, setLogoFloatActive] = useState(false);
   const [logoDissolving, setLogoDissolving] = useState(false);
   const [logoHasBeenDissolved, setLogoHasBeenDissolved] = useState(false);
+  // Demo toggle for custom SVG logo - set to true to showcase the new custom SVG logo!
+  const [useCustomSVGLogo, setUseCustomSVGLogo] = useState(true);
   const fullText = "ZIGZAG APPS";
   const typingSpeed = 120; // ms per character
   
@@ -131,7 +134,7 @@ export default function HeroSection({ onTypingComplete, onLogoDissolveComplete }
             {/* Animated Logo with "Pushed Along" Effect */}
             {!logoHasBeenDissolved && (
               <div 
-                className={`absolute top-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 z-10 brutalist-logo-shadow-themed logo-optimized pushed-logo ${
+                className={`absolute top-1/2 -translate-y-1/2 z-10 brutalist-logo-shadow-themed logo-optimized pushed-logo ${
                   logoEntranceActive ? 'logo-entrance' : 'transform -translate-x-full opacity-0'
                 } ${
                   logoFloatActive && !logoDissolving ? 'logo-float' : ''
@@ -144,12 +147,21 @@ export default function HeroSection({ onTypingComplete, onLogoDissolveComplete }
                 }}
                 data-testid="animated-logo"
               >
-                <img 
-                  src={getLogoAsset()} 
-                  alt="ZigZag Logo" 
-                  className={`w-full h-full object-contain logo-themed-${theme}`}
-                  style={{ imageRendering: 'crisp-edges' }}
-                />
+                {useCustomSVGLogo ? (
+                  <ZigzagLogo 
+                    size="medium" 
+                    className={`zigzag-logo logo-themed-${theme}`}
+                  />
+                ) : (
+                  <div className="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20">
+                    <img 
+                      src={getLogoAsset()} 
+                      alt="ZigZag Logo" 
+                      className={`w-full h-full object-contain logo-themed-${theme}`}
+                      style={{ imageRendering: 'crisp-edges' }}
+                    />
+                  </div>
+                )}
               </div>
             )}
             
