@@ -65,3 +65,61 @@ Preferred communication style: Simple, everyday language.
 - **Asset Management**: Vite asset handling with path resolution
 - **Environment Configuration**: Environment variables for database and API keys
 - **Production Build**: Optimized client and server builds for deployment
+
+## Database Synchronization System
+
+### Overview
+Automated database synchronization system for safely syncing development database content to production. The system includes backup and sync scripts with safety features to prevent data loss.
+
+### Scripts Location
+- `scripts/backup-db.ts` - Creates JSON backups of production database tables
+- `scripts/sync-db.ts` - Syncs development database content to production with safety features
+
+### Environment Variables Required
+- `DATABASE_URL` - Current development database connection (already configured)
+- `DEV_DATABASE_URL` - Development database URL (optional, defaults to DATABASE_URL)  
+- `PROD_DATABASE_URL` - Production database URL (required for sync operations)
+
+### NPM Scripts to Add
+Add these scripts to package.json (manual addition required due to configuration protection):
+```json
+{
+  "scripts": {
+    "backup-db": "tsx scripts/backup-db.ts",
+    "sync-db": "tsx scripts/sync-db.ts --replace",
+    "sync-db:dry": "tsx scripts/sync-db.ts --dry-run --replace --verbose"
+  }
+}
+```
+
+### Key Features
+- **Safe Upsert Strategy**: Uses business keys (apps.name, testimonials.name+content hash)
+- **Transaction Safety**: All operations wrapped in database transactions
+- **Automatic Backups**: Creates JSON backups before sync operations
+- **Dry-Run Mode**: Preview changes without executing them
+- **Replace Mode**: Handles deleted records with soft delete (isActive=false)
+- **Content-Only**: Never touches transactional data (purchases table)
+- **Clear Logging**: Comprehensive logging of all changes made
+
+### Usage Examples
+```bash
+# Backup production database
+npm run backup-db
+
+# Dry run sync (show planned changes)
+npm run sync-db:dry
+
+# Execute sync with replace mode
+npm run sync-db
+
+# Custom backup options
+tsx scripts/backup-db.ts --tables apps --output ./my-backups
+
+# Custom sync options  
+tsx scripts/sync-db.ts --dry-run --verbose
+```
+
+### Business Keys
+- **Apps**: Uses `name` field as unique business identifier
+- **Testimonials**: Uses combination of `name` + content hash for uniqueness
+- **Purchases**: Never modified by sync system (transactional integrity)
