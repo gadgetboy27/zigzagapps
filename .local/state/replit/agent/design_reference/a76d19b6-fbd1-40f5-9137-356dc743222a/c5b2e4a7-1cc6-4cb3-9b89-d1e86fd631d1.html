@@ -1,0 +1,928 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Henry Peti - Modern App Developer & Entrepreneur | Portfolio & App Store</title>
+    <meta name="description" content="Henry Peti - Software Engineer, App Developer & Entrepreneur. Discover cutting-edge mobile apps, web applications, and digital solutions. Buy premium apps and explore innovative development projects.">
+    <meta name="keywords" content="Henry Peti, app developer, software engineer, mobile apps, web development, app store, digital solutions, portfolio">
+    <meta name="author" content="Henry Peti">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Henry Peti - Modern App Developer & Entrepreneur">
+    <meta property="og:description" content="Discover cutting-edge apps and digital solutions from Henry Peti. Portfolio showcase and premium app marketplace.">
+    <meta property="og:url" content="https://gadgetboy27.github.io/portfolio/">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Henry Peti - App Developer Portfolio">
+    <meta name="twitter:description" content="Modern app development and premium digital solutions">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Henry Peti",
+        "jobTitle": "Software Engineer & App Developer",
+        "description": "Modern app developer specializing in mobile applications and web solutions",
+        "url": "https://gadgetboy27.github.io/portfolio/",
+        "sameAs": [
+            "https://github.com/gadgetboy27",
+            "https://linkedin.com/in/henrypeti"
+        ]
+    }
+    </script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                colors: {
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                    popover: {
+                        DEFAULT: "var(--popover)",
+                        foreground: "var(--popover-foreground)",
+                    },
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    destructive: {
+                        DEFAULT: "var(--destructive)",
+                        foreground: "var(--destructive-foreground)",
+                    },
+                    border: "var(--border)",
+                    input: "var(--input)",
+                    ring: "var(--ring)",
+                },
+                fontFamily: {
+                    sans: ["var(--font-sans)"],
+                    mono: ["var(--font-mono)"],
+                },
+                animation: {
+                    'bounce-slow': 'bounce 3s infinite',
+                    'pulse-slow': 'pulse 4s infinite',
+                    'float': 'float 6s ease-in-out infinite',
+                }
+            },
+        }
+    };
+    </script>
+    
+    <style>
+        :root {
+            --background: hsl(0 0% 4%);
+            --foreground: hsl(0 0% 98%);
+            --card: hsl(0 0% 8%);
+            --card-foreground: hsl(0 0% 98%);
+            --popover: hsl(0 0% 8%);
+            --popover-foreground: hsl(0 0% 98%);
+            --primary: hsl(193 100% 50%);
+            --primary-foreground: hsl(0 0% 4%);
+            --secondary: hsl(18 100% 60%);
+            --secondary-foreground: hsl(0 0% 4%);
+            --muted: hsl(0 0% 12%);
+            --muted-foreground: hsl(0 0% 70%);
+            --accent: hsl(140 100% 50%);
+            --accent-foreground: hsl(0 0% 4%);
+            --destructive: hsl(0 85% 60%);
+            --destructive-foreground: hsl(0 0% 98%);
+            --border: hsl(0 0% 15%);
+            --input: hsl(0 0% 15%);
+            --ring: hsl(193 100% 50%);
+            --radius: 0.75rem;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-sans);
+            background: var(--background);
+            color: var(--foreground);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.1s ease;
+            mix-blend-mode: difference;
+        }
+        
+        .cursor-hover {
+            transform: scale(2);
+            background: var(--secondary);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .brutalist-shadow {
+            box-shadow: 8px 8px 0px var(--primary);
+        }
+        
+        .brutalist-shadow-secondary {
+            box-shadow: 6px 6px 0px var(--secondary);
+        }
+        
+        .text-gradient {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .app-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .app-card:hover::before {
+            left: 100%;
+        }
+        
+        .app-card:hover {
+            transform: translateY(-10px) rotate(1deg);
+        }
+        
+        .scroll-snap {
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory;
+        }
+        
+        .snap-section {
+            scroll-snap-align: start;
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+        
+        .nav-indicator {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+        
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--muted);
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-dot.active {
+            background: var(--primary);
+            transform: scale(1.5);
+        }
+    </style>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="scroll-snap">
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="cursor"></div>
+    
+    <!-- Navigation Indicator -->
+    <div class="nav-indicator hidden lg:block">
+        <div class="nav-dot active" data-section="hero"></div>
+        <div class="nav-dot" data-section="about"></div>
+        <div class="nav-dot" data-section="apps"></div>
+        <div class="nav-dot" data-section="store"></div>
+        <div class="nav-dot" data-section="testimonials"></div>
+        <div class="nav-dot" data-section="contact"></div>
+    </div>
+    
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-background/80 border-b border-border">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-xl font-bold text-primary font-mono">HP</div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#about" class="hover:text-primary transition-colors">About</a>
+                    <a href="#apps" class="hover:text-primary transition-colors">Apps</a>
+                    <a href="#store" class="hover:text-primary transition-colors">Store</a>
+                    <a href="#contact" class="hover:text-primary transition-colors">Contact</a>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="https://github.com/gadgetboy27" class="text-muted-foreground hover:text-primary transition-colors">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/henrypeti" class="text-muted-foreground hover:text-primary transition-colors">
+                        <i class="fab fa-linkedin text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Hero Section -->
+    <section id="hero" class="min-h-screen flex items-center justify-center snap-section relative overflow-hidden">
+        <!-- Floating geometric shapes -->
+        <div class="absolute top-20 left-20 w-16 h-16 bg-primary/20 rotate-45 animate-float"></div>
+        <div class="absolute top-40 right-32 w-24 h-24 bg-secondary/20 rounded-full animate-bounce-slow"></div>
+        <div class="absolute bottom-32 left-1/4 w-12 h-12 bg-accent/20 animate-pulse-slow"></div>
+        
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-6xl md:text-8xl font-black mb-6 text-gradient leading-tight">
+                    HENRY PETI
+                </h1>
+                <div class="text-2xl md:text-4xl font-bold mb-8 text-foreground">
+                    <span class="block">SOFTWARE ENGINEER</span>
+                    <span class="block text-secondary">APP DEVELOPER</span>
+                    <span class="block text-accent">ENTREPRENEUR</span>
+                </div>
+                <p class="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto">
+                    Crafting cutting-edge mobile apps and web solutions that push the boundaries of what's possible
+                </p>
+                <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                    <a href="#apps" class="bg-primary text-primary-foreground px-8 py-4 rounded-lg font-bold text-lg brutalist-shadow hover:translate-x-2 hover:translate-y-2 hover:shadow-none transition-all">
+                        EXPLORE APPS
+                    </a>
+                    <a href="#store" class="bg-transparent border-2 border-secondary text-secondary px-8 py-4 rounded-lg font-bold text-lg hover:bg-secondary hover:text-secondary-foreground transition-all">
+                        BUY PREMIUM APPS
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about" class="min-h-screen py-20 snap-section">
+        <div class="container mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="order-2 lg:order-1">
+                    <h2 class="text-5xl md:text-6xl font-black mb-8 text-primary">ABOUT</h2>
+                    <div class="space-y-6 text-lg">
+                        <p class="text-muted-foreground">
+                            I'm Henry Peti, a passionate software engineer and entrepreneur with over 5 years of experience building innovative digital solutions. My journey started in pre-COVID times, and I've evolved with the rapidly changing tech landscape.
+                        </p>
+                        <p class="text-muted-foreground">
+                            I specialize in creating mobile applications, web platforms, and digital experiences that solve real-world problems. From concept to deployment, I handle the entire development lifecycle.
+                        </p>
+                        <div class="grid grid-cols-2 gap-6 mt-8">
+                            <div class="bg-card p-6 rounded-lg brutalist-shadow-secondary">
+                                <h3 class="text-secondary font-bold text-xl mb-2">50+</h3>
+                                <p class="text-muted-foreground">Projects Completed</p>
+                            </div>
+                            <div class="bg-card p-6 rounded-lg brutalist-shadow-secondary">
+                                <h3 class="text-accent font-bold text-xl mb-2">15+</h3>
+                                <p class="text-muted-foreground">Apps Published</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-1 lg:order-2">
+                    <!-- Professional developer workspace -->
+                    <img src="https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" alt="Modern developer workspace with multiple monitors showing code" class="rounded-2xl brutalist-shadow w-full h-auto" />
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Apps Showcase -->
+    <section id="apps" class="min-h-screen py-20 snap-section">
+        <div class="container mx-auto px-6">
+            <h2 class="text-5xl md:text-6xl font-black mb-16 text-center text-primary">MY APPS</h2>
+            
+            <!-- Filter Buttons -->
+            <div class="flex flex-wrap justify-center gap-4 mb-12">
+                <button class="filter-btn active bg-primary text-primary-foreground px-6 py-3 rounded-lg font-bold" data-filter="all">ALL</button>
+                <button class="filter-btn bg-muted text-muted-foreground px-6 py-3 rounded-lg font-bold hover:bg-secondary hover:text-secondary-foreground transition-all" data-filter="mobile">MOBILE</button>
+                <button class="filter-btn bg-muted text-muted-foreground px-6 py-3 rounded-lg font-bold hover:bg-secondary hover:text-secondary-foreground transition-all" data-filter="web">WEB</button>
+                <button class="filter-btn bg-muted text-muted-foreground px-6 py-3 rounded-lg font-bold hover:bg-secondary hover:text-secondary-foreground transition-all" data-filter="desktop">DESKTOP</button>
+            </div>
+            
+            <!-- Apps Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- App 1 -->
+                <div class="app-card bg-card rounded-2xl overflow-hidden brutalist-shadow" data-category="mobile">
+                    <!-- Modern portfolio hero sections -->
+                    <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400" alt="Mobile app interface showing modern portfolio design" class="w-full h-48 object-cover" />
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-foreground">TaskFlow Pro</h3>
+                        <p class="text-muted-foreground mb-4">Advanced productivity app with AI-powered task management and team collaboration features.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm">React Native</span>
+                            <span class="bg-secondary/20 text-secondary px-3 py-1 rounded-full text-sm">Node.js</span>
+                            <span class="bg-accent/20 text-accent px-3 py-1 rounded-full text-sm">AI/ML</span>
+                        </div>
+                        <div class="flex gap-3">
+                            <a href="#" class="flex-1 bg-primary text-primary-foreground py-2 px-4 rounded-lg text-center font-bold hover:bg-primary/90 transition-colors">Demo</a>
+                            <a href="#" class="flex-1 bg-secondary text-secondary-foreground py-2 px-4 rounded-lg text-center font-bold hover:bg-secondary/90 transition-colors">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- App 2 -->
+                <div class="app-card bg-card rounded-2xl overflow-hidden brutalist-shadow" data-category="web">
+                    <!-- App showcase interfaces -->
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400" alt="Dashboard analytics interface with charts and data visualization" class="w-full h-48 object-cover" />
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-foreground">DataViz Dashboard</h3>
+                        <p class="text-muted-foreground mb-4">Real-time analytics platform with interactive charts and business intelligence features.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm">Next.js</span>
+                            <span class="bg-secondary/20 text-secondary px-3 py-1 rounded-full text-sm">D3.js</span>
+                            <span class="bg-accent/20 text-accent px-3 py-1 rounded-full text-sm">Python</span>
+                        </div>
+                        <div class="flex gap-3">
+                            <a href="#" class="flex-1 bg-primary text-primary-foreground py-2 px-4 rounded-lg text-center font-bold hover:bg-primary/90 transition-colors">Demo</a>
+                            <a href="#" class="flex-1 bg-secondary text-secondary-foreground py-2 px-4 rounded-lg text-center font-bold hover:bg-secondary/90 transition-colors">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- App 3 -->
+                <div class="app-card bg-card rounded-2xl overflow-hidden brutalist-shadow" data-category="mobile">
+                    <!-- E-commerce gallery layouts -->
+                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400" alt="E-commerce mobile app showing product gallery and shopping interface" class="w-full h-48 object-cover" />
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-foreground">ShopSmart</h3>
+                        <p class="text-muted-foreground mb-4">AI-powered e-commerce app with personalized recommendations and AR try-on features.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm">Flutter</span>
+                            <span class="bg-secondary/20 text-secondary px-3 py-1 rounded-full text-sm">AR Core</span>
+                            <span class="bg-accent/20 text-accent px-3 py-1 rounded-full text-sm">Stripe</span>
+                        </div>
+                        <div class="flex gap-3">
+                            <a href="#" class="flex-1 bg-primary text-primary-foreground py-2 px-4 rounded-lg text-center font-bold hover:bg-primary/90 transition-colors">Demo</a>
+                            <a href="#" class="flex-1 bg-secondary text-secondary-foreground py-2 px-4 rounded-lg text-center font-bold hover:bg-secondary/90 transition-colors">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- App 4 -->
+                <div class="app-card bg-card rounded-2xl overflow-hidden brutalist-shadow" data-category="desktop">
+                    <!-- Professional developer workspace -->
+                    <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400" alt="Desktop development environment with code editor and terminal" class="w-full h-48 object-cover" />
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-foreground">CodeForge IDE</h3>
+                        <p class="text-muted-foreground mb-4">Modern code editor with AI assistance, collaborative features, and cloud synchronization.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm">Electron</span>
+                            <span class="bg-secondary/20 text-secondary px-3 py-1 rounded-full text-sm">WebRTC</span>
+                            <span class="bg-accent/20 text-accent px-3 py-1 rounded-full text-sm">OpenAI</span>
+                        </div>
+                        <div class="flex gap-3">
+                            <a href="#" class="flex-1 bg-primary text-primary-foreground py-2 px-4 rounded-lg text-center font-bold hover:bg-primary/90 transition-colors">Demo</a>
+                            <a href="#" class="flex-1 bg-secondary text-secondary-foreground py-2 px-4 rounded-lg text-center font-bold hover:bg-secondary/90 transition-colors">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- App 5 -->
+                <div class="app-card bg-card rounded-2xl overflow-hidden brutalist-shadow" data-category="web">
+                    <!-- Modern portfolio hero sections -->
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400" alt="Analytics and chart interface showing business metrics" class="w-full h-48 object-cover" />
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-foreground">CryptoTracker</h3>
+                        <p class="text-muted-foreground mb-4">Real-time cryptocurrency tracking platform with advanced portfolio management and alerts.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm">Vue.js</span>
+                            <span class="bg-secondary/20 text-secondary px-3 py-1 rounded-full text-sm">Web3</span>
+                            <span class="bg-accent/20 text-accent px-3 py-1 rounded-full text-sm">Chart.js</span>
+                        </div>
+                        <div class="flex gap-3">
+                            <a href="#" class="flex-1 bg-primary text-primary-foreground py-2 px-4 rounded-lg text-center font-bold hover:bg-primary/90 transition-colors">Demo</a>
+                            <a href="#" class="flex-1 bg-secondary text-secondary-foreground py-2 px-4 rounded-lg text-center font-bold hover:bg-secondary/90 transition-colors">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- App 6 -->
+                <div class="app-card bg-card rounded-2xl overflow-hidden brutalist-shadow" data-category="mobile">
+                    <!-- App showcase interfaces -->
+                    <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400" alt="Fitness app interface showing workout tracking and health metrics" class="w-full h-48 object-cover" />
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-foreground">FitnessPro</h3>
+                        <p class="text-muted-foreground mb-4">Comprehensive fitness app with workout tracking, nutrition planning, and social features.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm">Swift UI</span>
+                            <span class="bg-secondary/20 text-secondary px-3 py-1 rounded-full text-sm">HealthKit</span>
+                            <span class="bg-accent/20 text-accent px-3 py-1 rounded-full text-sm">Core ML</span>
+                        </div>
+                        <div class="flex gap-3">
+                            <a href="#" class="flex-1 bg-primary text-primary-foreground py-2 px-4 rounded-lg text-center font-bold hover:bg-primary/90 transition-colors">Demo</a>
+                            <a href="#" class="flex-1 bg-secondary text-secondary-foreground py-2 px-4 rounded-lg text-center font-bold hover:bg-secondary/90 transition-colors">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Premium App Store -->
+    <section id="store" class="min-h-screen py-20 snap-section bg-muted/20">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl md:text-6xl font-black mb-6 text-secondary">PREMIUM STORE</h2>
+                <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
+                    Get exclusive access to premium applications with advanced features, priority support, and lifetime updates.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Premium App 1 -->
+                <div class="bg-card rounded-2xl overflow-hidden brutalist-shadow-secondary relative">
+                    <div class="absolute top-4 right-4 bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-bold">
+                        BESTSELLER
+                    </div>
+                    <!-- E-commerce gallery layouts -->
+                    <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=300" alt="Premium business app interface with professional design" class="w-full h-40 object-cover" />
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold mb-2 text-foreground">BusinessFlow Premium</h3>
+                        <p class="text-muted-foreground mb-4">
+                            Complete business management suite with CRM, invoicing, analytics, and team collaboration.
+                        </p>
+                        <div class="flex items-center mb-4">
+                            <span class="text-3xl font-bold text-primary">$299</span>
+                            <span class="text-muted-foreground ml-2 line-through">$499</span>
+                            <span class="bg-destructive text-destructive-foreground px-2 py-1 rounded ml-2 text-sm">40% OFF</span>
+                        </div>
+                        <ul class="text-sm text-muted-foreground mb-6 space-y-2">
+                            <li class="flex items-center"><i class="fas fa-check text-accent mr-2"></i> Unlimited projects</li>
+                            <li class="flex items-center"><i class="fas fa-check text-accent mr-2"></i> Advanced analytics</li>
+                            <li class="flex items-center"><i class="fas fa-check text-accent mr-2"></i> 24/7 support</li>
+                            <li class="flex items-center"><i class="fas fa-check text-accent mr-2"></i> Lifetime updates</li>
+                        </ul>
+                        <button class="w-full bg-primary text-primary-foreground py-3 rounded-lg font-bold hover:bg-primary/90 transition-colors" data-app="businessflow">
+                            <i class="fas fa-shopping-cart mr-2"></i>BUY NOW
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Premium App 2 -->
+                <div class="bg-card rounded-2xl overflow-hidden brutalist-shadow-secondary">
+                    <!-- E-commerce gallery layouts -->
+                    <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=300" alt="Creative design tools interface for professionals" class="w-full h-40 object-cover" />
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold mb-2 text-foreground">DesignStudio Pro</h3>
+                        <p class="text-muted-foreground mb-4">
+                            Professional design toolkit with AI-powered features, asset library, and collaboration tools.
+                        </p>
+                        <div class="flex items-center mb-4">
+                            <span class="text-3xl font-bold text-secondary">$199</span>
+                            <span class="text-muted-foreground ml-2">one-time</span>
+                        </div>
+                        <ul class="text-sm text-muted-foreground mb-6 space-y-2">
+                            <li class="flex items-center"><i class="fas fa-check text-accent mr-2"></i> AI design assistant</li>
+                            <li class="flex items-center"><i class="fas fa-check text-accent mr-2"></i> 10,000+ assets</li>
+                            <li class="flex items-center"><i class="fas fa-check text-accent mr-2"></i> Team collaboration</li>
+                            <li class="flex items-center"><i class="fas fa-check text-accent mr-2"></i> Cloud sync</li>
+                        </ul>
+                        <button class="w-full bg-secondary text-secondary-foreground py-3 rounded-lg font-bold hover:bg-secondary/90 transition-colors" data-app="designstudio">
+                            <i class="fas fa-shopping-cart mr-2"></i>BUY NOW
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Premium App 3 -->
+                <div class="bg-card rounded-2xl overflow-hidden brutalist-shadow-secondary">
+                    <!-- Professional developer workspace -->
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=300" alt="Marketing automation dashboard with analytics and insights" class="w-full h-40 object-cover" />
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold mb-2 text-foreground">MarketingBot AI</h3>
+                        <p class="text-muted-foreground mb-4">
+                            Automated marketing suite with AI content generation, campaign management, and ROI tracking.
+                        </p>
+                        <div class="flex items-center mb-4">
+                            <span class="text-3xl font-bold text-accent">$149</span>
+                            <span class="text-muted-foreground ml-2">/month</span>
+                        </div>
+                        <ul class="text-sm text-muted-foreground mb-6 space-y-2">
+                            <li class="flex items-center"><i class="fas fa-check text-accent mr-2"></i> AI content writer</li>
+                            <li class="flex items-center"><i class="fas fa-check text-accent mr-2"></i> Multi-platform posting</li>
+                            <li class="flex items-center"><i class="fas fa-check text-accent mr-2"></i> Advanced analytics</li>
+                            <li class="flex items-center"><i class="fas fa-check text-accent mr-2"></i> A/B testing</li>
+                        </ul>
+                        <button class="w-full bg-accent text-accent-foreground py-3 rounded-lg font-bold hover:bg-accent/90 transition-colors" data-app="marketingbot">
+                            <i class="fas fa-shopping-cart mr-2"></i>START FREE TRIAL
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Payment Security -->
+            <div class="text-center mt-16">
+                <p class="text-muted-foreground mb-4">Secure payments powered by Stripe • 30-day money-back guarantee</p>
+                <div class="flex justify-center space-x-6 text-2xl text-muted-foreground">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-cc-amex"></i>
+                    <i class="fab fa-paypal"></i>
+                    <i class="fab fa-apple-pay"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials -->
+    <section id="testimonials" class="min-h-screen py-20 snap-section">
+        <div class="container mx-auto px-6">
+            <h2 class="text-5xl md:text-6xl font-black mb-16 text-center text-primary">TESTIMONIALS</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-card p-8 rounded-2xl brutalist-shadow">
+                    <div class="flex items-center mb-4">
+                        <div class="flex text-accent text-xl">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-muted-foreground mb-6 italic">
+                        "Henry's apps transformed our business operations. The BusinessFlow Premium suite increased our productivity by 300%. Outstanding work!"
+                    </p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold mr-4">
+                            JS
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-foreground">John Smith</h4>
+                            <p class="text-muted-foreground text-sm">CEO, TechStart Inc.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="bg-card p-8 rounded-2xl brutalist-shadow">
+                    <div class="flex items-center mb-4">
+                        <div class="flex text-accent text-xl">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-muted-foreground mb-6 italic">
+                        "The DesignStudio Pro app is incredible! The AI features save me hours of work every day. Best design tool I've ever used."
+                    </p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-secondary rounded-full flex items-center justify-center text-secondary-foreground font-bold mr-4">
+                            MJ
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-foreground">Maria Johnson</h4>
+                            <p class="text-muted-foreground text-sm">Creative Director, PixelPro</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="bg-card p-8 rounded-2xl brutalist-shadow">
+                    <div class="flex items-center mb-4">
+                        <div class="flex text-accent text-xl">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-muted-foreground mb-6 italic">
+                        "Henry delivered exactly what we needed. Professional, fast, and innovative. Our mobile app is now top-rated in the App Store!"
+                    </p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-accent rounded-full flex items-center justify-center text-accent-foreground font-bold mr-4">
+                            DL
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-foreground">David Lee</h4>
+                            <p class="text-muted-foreground text-sm">Founder, AppVenture</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="min-h-screen py-20 snap-section">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-5xl md:text-6xl font-black mb-16 text-center text-primary">GET IN TOUCH</h2>
+                
+                <div class="grid lg:grid-cols-2 gap-16">
+                    <!-- Contact Info -->
+                    <div>
+                        <h3 class="text-2xl font-bold mb-8 text-secondary">Let's Build Something Amazing</h3>
+                        <p class="text-muted-foreground mb-8 text-lg">
+                            Ready to turn your ideas into reality? Whether you need a custom app, web platform, or digital solution, I'm here to help bring your vision to life.
+                        </p>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-envelope text-primary-foreground"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-foreground">Email</h4>
+                                    <p class="text-muted-foreground">henrypeti.dev@gmail.com</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-phone text-secondary-foreground"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-foreground">Phone</h4>
+                                    <p class="text-muted-foreground">+1 (555) 123-4567</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-accent rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-map-marker-alt text-accent-foreground"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-foreground">Location</h4>
+                                    <p class="text-muted-foreground">San Francisco, CA</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Social Links -->
+                        <div class="mt-8">
+                            <h4 class="font-bold text-foreground mb-4">Follow Me</h4>
+                            <div class="flex space-x-4">
+                                <a href="https://github.com/gadgetboy27" class="w-12 h-12 bg-muted rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                                <a href="https://linkedin.com/in/henrypeti" class="w-12 h-12 bg-muted rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors">
+                                    <i class="fab fa-linkedin"></i>
+                                </a>
+                                <a href="https://twitter.com/henrypeti" class="w-12 h-12 bg-muted rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="https://instagram.com/henrypeti.dev" class="w-12 h-12 bg-muted rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Form -->
+                    <div class="bg-card p-8 rounded-2xl brutalist-shadow-secondary">
+                        <form id="contactForm" class="space-y-6">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-bold text-foreground mb-2">Name *</label>
+                                    <input type="text" name="name" required class="w-full bg-input border border-border rounded-lg px-4 py-3 text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-foreground mb-2">Email *</label>
+                                    <input type="email" name="email" required class="w-full bg-input border border-border rounded-lg px-4 py-3 text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-bold text-foreground mb-2">Project Type</label>
+                                <select name="projectType" class="w-full bg-input border border-border rounded-lg px-4 py-3 text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                                    <option>Mobile App Development</option>
+                                    <option>Web Application</option>
+                                    <option>Desktop Software</option>
+                                    <option>E-commerce Platform</option>
+                                    <option>Consulting</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-bold text-foreground mb-2">Budget Range</label>
+                                <select name="budget" class="w-full bg-input border border-border rounded-lg px-4 py-3 text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                                    <option>$5,000 - $10,000</option>
+                                    <option>$10,000 - $25,000</option>
+                                    <option>$25,000 - $50,000</option>
+                                    <option>$50,000+</option>
+                                    <option>Let's discuss</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-bold text-foreground mb-2">Message *</label>
+                                <textarea name="message" rows="5" required placeholder="Tell me about your project..." class="w-full bg-input border border-border rounded-lg px-4 py-3 text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-primary text-primary-foreground py-4 rounded-lg font-bold text-lg brutalist-shadow hover:translate-x-2 hover:translate-y-2 hover:shadow-none transition-all">
+                                <i class="fas fa-paper-plane mr-2"></i>SEND MESSAGE
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-12 border-t border-border">
+        <div class="container mx-auto px-6">
+            <div class="text-center">
+                <div class="text-2xl font-bold text-primary font-mono mb-4">HP</div>
+                <p class="text-muted-foreground mb-6">Building the future, one app at a time.</p>
+                <div class="flex justify-center space-x-6 mb-6">
+                    <a href="#apps" class="text-muted-foreground hover:text-primary transition-colors">Apps</a>
+                    <a href="#store" class="text-muted-foreground hover:text-primary transition-colors">Store</a>
+                    <a href="#contact" class="text-muted-foreground hover:text-primary transition-colors">Contact</a>
+                    <a href="/privacy" class="text-muted-foreground hover:text-primary transition-colors">Privacy</a>
+                    <a href="/terms" class="text-muted-foreground hover:text-primary transition-colors">Terms</a>
+                </div>
+                <p class="text-muted-foreground text-sm">© 2025 Henry Peti. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // TODO: Implement business logic, API calls, and state management
+        (function() {
+            // Custom cursor
+            const cursor = document.getElementById('cursor');
+            const interactiveElements = document.querySelectorAll('a, button, .app-card');
+            
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            });
+            
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => cursor.classList.add('cursor-hover'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('cursor-hover'));
+            });
+            
+            // Navigation dots
+            const navDots = document.querySelectorAll('.nav-dot');
+            const sections = document.querySelectorAll('section');
+            
+            navDots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    const targetSection = dot.getAttribute('data-section');
+                    document.getElementById(targetSection).scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+            
+            // Intersection Observer for nav dots
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navDots.forEach(dot => dot.classList.remove('active'));
+                        const targetDot = document.querySelector(`[data-section="${entry.target.id}"]`);
+                        if (targetDot) targetDot.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(section => observer.observe(section));
+            
+            // App filtering
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const appCards = document.querySelectorAll('.app-card');
+            
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const filter = btn.getAttribute('data-filter');
+                    
+                    // Update active button
+                    filterBtns.forEach(b => {
+                        b.classList.remove('active', 'bg-primary', 'text-primary-foreground');
+                        b.classList.add('bg-muted', 'text-muted-foreground');
+                    });
+                    btn.classList.remove('bg-muted', 'text-muted-foreground');
+                    btn.classList.add('active', 'bg-primary', 'text-primary-foreground');
+                    
+                    // Filter apps
+                    appCards.forEach(card => {
+                        const category = card.getAttribute('data-category');
+                        if (filter === 'all' || category === filter) {
+                            card.style.display = 'block';
+                            setTimeout(() => {
+                                card.style.opacity = '1';
+                                card.style.transform = 'translateY(0)';
+                            }, 100);
+                        } else {
+                            card.style.opacity = '0';
+                            card.style.transform = 'translateY(20px)';
+                            setTimeout(() => {
+                                card.style.display = 'none';
+                            }, 300);
+                        }
+                    });
+                });
+            });
+            
+            // Contact form handling
+            const contactForm = document.getElementById('contactForm');
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // TODO: Implement Gmail integration and form submission
+                const formData = new FormData(contactForm);
+                const data = Object.fromEntries(formData);
+                
+                // Simulate form submission
+                alert('Thank you for your message! I will get back to you soon.');
+                contactForm.reset();
+                
+                // TODO: Integrate with backend API or email service
+                console.log('Form data:', data);
+            });
+            
+            // E-commerce buttons
+            const buyButtons = document.querySelectorAll('[data-app]');
+            buyButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const appName = btn.getAttribute('data-app');
+                    
+                    // TODO: Integrate with Stripe payment processing
+                    alert(`Redirecting to secure checkout for ${appName}...`);
+                    
+                    // TODO: Implement Stripe payment flow
+                    console.log('Initiating purchase for:', appName);
+                });
+            });
+            
+            // Smooth scroll behavior
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+            
+            // Performance optimization - lazy loading images
+            const images = document.querySelectorAll('img');
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.src; // Trigger loading
+                        imageObserver.unobserve(img);
+                    }
+                });
+            });
+            
+            images.forEach(img => imageObserver.observe(img));
+            
+        })();
+    </script>
+</body>
+</html>
