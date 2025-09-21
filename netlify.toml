@@ -1,6 +1,6 @@
 [build]
   publish = "dist/public"
-  command = "npm ci --force --omit=dev --omit=optional || npm install --force && npx vite build"
+  command = "npm install --force && npx vite build"
 
 [build.environment]
   NODE_VERSION = "20"

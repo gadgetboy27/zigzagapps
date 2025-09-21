@@ -1,0 +1,128 @@
+6:21:06 PM: build-image version: 82641f3cd91d26dfb76016a98afb1d48c45185fc (noble)
+6:21:06 PM: buildbot version: 82641f3cd91d26dfb76016a98afb1d48c45185fc
+6:21:06 PM: Fetching cached dependencies
+6:21:06 PM: Failed to fetch cache, continuing with build
+6:21:06 PM: Starting to prepare the repo for build
+6:21:06 PM: No cached dependencies found. Cloning fresh repo
+6:21:06 PM: git clone --filter=blob:none https://github.com/gadgetboy27/zigzagapps
+6:21:06 PM: Preparing Git Reference refs/heads/main
+6:21:08 PM: Custom build command detected. Proceeding with the specified command: 'npm ci --force --omit=dev --omit=optional || npm install --force && npx vite build'
+6:21:08 PM: Starting to install dependencies
+6:21:09 PM: Attempting Node.js version '20' from .nvmrc
+6:21:09 PM: Downloading and installing node v20.19.5...
+6:21:09 PM: Downloading https://nodejs.org/dist/v20.19.5/node-v20.19.5-linux-x64.tar.xz...
+6:21:15 PM: Computing checksum with sha256sum
+6:21:15 PM: Checksums matched!
+6:21:17 PM: Now using node v20.19.5 (npm v10.8.2)
+6:21:17 PM: Enabling Node.js Corepack
+6:21:17 PM: Started restoring cached build plugins
+6:21:17 PM: Finished restoring cached build plugins
+6:21:17 PM: Started restoring cached corepack dependencies
+6:21:17 PM: Finished restoring cached corepack dependencies
+6:21:17 PM: No npm workspaces detected
+6:21:17 PM: Started restoring cached node modules
+6:21:17 PM: Finished restoring cached node modules
+6:21:17 PM: Installing npm packages using npm version 10.8.2
+6:21:17 PM: npm warn using --force Recommended protections disabled.
+6:21:18 PM: npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+6:21:19 PM: npm warn deprecated glob@8.1.0: Glob versions prior to v9 are no longer supported
+6:21:23 PM: added 625 packages in 6s
+6:21:23 PM: npm packages installed
+6:21:23 PM: npm warn using --force Recommended protections disabled.
+6:21:24 PM: Successfully installed dependencies
+6:21:24 PM: Starting build script
+6:21:24 PM: Detected 1 framework(s)
+6:21:24 PM: "vite" at version "7.1.6"
+6:21:24 PM: Section completed: initializing
+6:21:25 PM: ​
+6:21:25 PM: Netlify Build                                                 
+6:21:25 PM: ────────────────────────────────────────────────────────────────
+6:21:25 PM: ​
+6:21:25 PM: ❯ Version
+6:21:25 PM:   @netlify/build 35.1.6
+6:21:25 PM: ​
+6:21:25 PM: ❯ Flags
+6:21:25 PM:   accountId: 5ea580f23ea00910534efb84
+6:21:25 PM:   baseRelDir: true
+6:21:25 PM:   buildId: 68cf9947f43aca0008f693ff
+6:21:25 PM:   deployId: 68cf9947f43aca0008f69401
+6:21:25 PM: ​
+6:21:25 PM: ❯ Current directory
+6:21:25 PM:   /opt/build/repo
+6:21:25 PM: ​
+6:21:25 PM: ❯ Config file
+6:21:25 PM:   /opt/build/repo/netlify.toml
+6:21:25 PM: ​
+6:21:25 PM: ❯ Context
+6:21:25 PM:   production
+6:21:25 PM: ​
+6:21:25 PM: ❯ Installing extensions
+6:21:25 PM:    - neon
+6:21:49 PM: ​
+6:21:49 PM: ❯ Loading extensions
+6:21:49 PM:    - neon
+6:21:49 PM: ​
+6:21:49 PM: build.command from netlify.toml                               
+6:21:49 PM: ────────────────────────────────────────────────────────────────
+6:21:49 PM: ​
+6:21:49 PM: $ npm ci --force --omit=dev --omit=optional || npm install --force && npx vite build
+6:21:49 PM: npm warn using --force Recommended protections disabled.
+6:21:57 PM: added 495 packages, and audited 496 packages in 8s
+6:21:57 PM: 60 packages are looking for funding
+6:21:57 PM:   run `npm fund` for details
+6:21:57 PM: found 0 vulnerabilities
+6:21:58 PM: npm warn using --force Recommended protections disabled.
+6:21:58 PM: npm warn exec The following package was not found and will be installed: vite@7.1.6
+6:22:00 PM: failed to load config from /opt/build/repo/vite.config.ts
+6:22:00 PM: error during build:
+6:22:00 PM: Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'vite' imported from /opt/build/repo/node_modules/.vite-temp/vite.config.ts.timestamp-1758435720922-85e6d570a6b24.mjs
+6:22:00 PM:     at packageResolve (node:internal/modules/esm/resolve:873:9)
+6:22:00 PM:     at moduleResolve (node:internal/modules/esm/resolve:946:18)
+6:22:00 PM:     at defaultResolve (node:internal/modules/esm/resolve:1188:11)
+6:22:00 PM:     at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:708:12)
+6:22:00 PM:     at #cachedDefaultResolve (node:internal/modules/esm/loader:657:25)
+6:22:00 PM:     at ModuleLoader.resolve (node:internal/modules/esm/loader:640:38)
+6:22:00 PM:     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:264:38)
+6:22:00 PM:     at ModuleJob._link (node:internal/modules/esm/module_job:168:49)
+6:22:01 PM: ​
+6:22:01 PM: "build.command" failed                                        
+6:22:01 PM: ────────────────────────────────────────────────────────────────
+6:22:01 PM: ​
+6:22:01 PM:   Error message
+6:22:01 PM:   Command failed with exit code 1: npm ci --force --omit=dev --omit=optional || npm install --force && npx vite build (https://ntl.fyi/exit-code-1)
+6:22:01 PM: ​
+6:22:01 PM:   Error location
+6:22:01 PM:   In build.command from netlify.toml:
+6:22:01 PM:   npm ci --force --omit=dev --omit=optional || npm install --force && npx vite build
+6:22:01 PM: ​
+6:22:01 PM:   Resolved config
+6:22:01 PM:   build:
+6:22:01 PM:     command: npm ci --force --omit=dev --omit=optional || npm install --force && npx
+6:22:01 PM:       vite build
+6:22:01 PM:     commandOrigin: config
+6:22:01 PM:     environment:
+6:22:01 PM:       - VITE_API_URL
+6:22:01 PM:       - VITE_STRIPE_PUBLISHABLE_KEY
+6:22:01 PM:       - NODE_VERSION
+6:22:01 PM:     publish: /opt/build/repo/dist/public
+6:22:01 PM:     publishOrigin: config
+6:22:01 PM:   headers:
+6:22:01 PM:     - for: /*
+      values:
+        Permissions-Policy: camera=(), microphone=(), geolocation=()
+        Referrer-Policy: strict-origin-when-cross-origin
+        X-Content-Type-Options: nosniff
+        X-Frame-Options: DENY
+    - for: /assets/*
+      values:
+        Cache-Control: public, max-age=31536000, immutable
+  headersOrigin: config
+  redirects:
+    - from: /*
+      status: 200
+      to: /index.html
+  redirectsOrigin: config
+6:22:01 PM: Build failed due to a user error: Build script returned non-zero exit code: 2
+6:22:01 PM: Failing build: Failed to build site
+6:22:02 PM: Finished processing build request in 55.425s
+6:22:01 PM: Failed during stage 'building site': Build script returned non-zero exit code: 2 (https://ntl.fyi/exit-code-2)
