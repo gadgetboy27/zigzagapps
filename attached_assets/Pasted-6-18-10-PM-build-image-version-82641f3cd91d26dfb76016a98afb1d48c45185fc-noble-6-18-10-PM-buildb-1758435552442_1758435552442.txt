@@ -1,0 +1,59 @@
+6:18:10 PM: build-image version: 82641f3cd91d26dfb76016a98afb1d48c45185fc (noble)
+6:18:10 PM: buildbot version: 82641f3cd91d26dfb76016a98afb1d48c45185fc
+6:18:10 PM: Fetching cached dependencies
+6:18:10 PM: Failed to fetch cache, continuing with build
+6:18:10 PM: Starting to prepare the repo for build
+6:18:10 PM: No cached dependencies found. Cloning fresh repo
+6:18:10 PM: git clone --filter=blob:none https://github.com/gadgetboy27/zigzagapps
+6:18:10 PM: Preparing Git Reference refs/heads/main
+6:18:12 PM: Custom build command detected. Proceeding with the specified command: 'npm install --legacy-peer-deps && npm run build'
+6:18:12 PM: Starting to install dependencies
+6:18:13 PM: Attempting Node.js version '20' from .nvmrc
+6:18:13 PM: Downloading and installing node v20.19.5...
+6:18:13 PM: Downloading https://nodejs.org/dist/v20.19.5/node-v20.19.5-linux-x64.tar.xz...
+6:18:14 PM: Computing checksum with sha256sum
+6:18:14 PM: Checksums matched!
+6:18:16 PM: Now using node v20.19.5 (npm v10.8.2)
+6:18:16 PM: Enabling Node.js Corepack
+6:18:16 PM: Started restoring cached build plugins
+6:18:16 PM: Finished restoring cached build plugins
+6:18:16 PM: Started restoring cached corepack dependencies
+6:18:16 PM: Finished restoring cached corepack dependencies
+6:18:16 PM: No npm workspaces detected
+6:18:16 PM: Started restoring cached node modules
+6:18:16 PM: Finished restoring cached node modules
+6:18:16 PM: Installing npm packages using npm version 10.8.2
+6:18:19 PM: Failed during stage 'Install dependencies': dependency_installation script returned non-zero exit code: 1
+6:18:19 PM: npm error code ERESOLVE
+6:18:19 PM: npm error ERESOLVE could not resolve
+6:18:19 PM: npm error
+6:18:19 PM: npm error While resolving: @tailwindcss/vite@4.1.3
+6:18:19 PM: npm error Found: vite@7.1.6
+6:18:19 PM: npm error node_modules/vite
+6:18:19 PM: npm error   dev vite@"^7.1.6" from the root project
+6:18:19 PM: npm error   peer vite@"^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0" from @vitejs/plugin-react@4.7.0
+6:18:19 PM: npm error   node_modules/@vitejs/plugin-react
+6:18:19 PM: npm error     dev @vitejs/plugin-react@"^4.3.2" from the root project
+6:18:19 PM: npm error
+6:18:19 PM: npm error Could not resolve dependency:
+6:18:19 PM: npm error peer vite@"^5.2.0 || ^6" from @tailwindcss/vite@4.1.3
+6:18:19 PM: npm error node_modules/@tailwindcss/vite
+6:18:19 PM: npm error   dev @tailwindcss/vite@"^4.1.3" from the root project
+6:18:19 PM: npm error
+6:18:19 PM: npm error Conflicting peer dependency: vite@6.3.6
+6:18:19 PM: npm error node_modules/vite
+6:18:19 PM: npm error   peer vite@"^5.2.0 || ^6" from @tailwindcss/vite@4.1.3
+6:18:19 PM: npm error   node_modules/@tailwindcss/vite
+6:18:19 PM: npm error     dev @tailwindcss/vite@"^4.1.3" from the root project
+6:18:19 PM: npm error
+6:18:19 PM: npm error Fix the upstream dependency conflict, or retry
+6:18:19 PM: npm error this command with --force or --legacy-peer-deps
+6:18:19 PM: npm error to accept an incorrect (and potentially broken) dependency resolution.
+6:18:19 PM: npm error
+6:18:19 PM: npm error
+6:18:19 PM: npm error For a full report see:
+6:18:19 PM: npm error /opt/buildhome/.npm/_logs/2025-09-21T06_18_16_478Z-eresolve-report.txt
+6:18:19 PM: npm error A complete log of this run can be found in: /opt/buildhome/.npm/_logs/2025-09-21T06_18_16_478Z-debug-0.log
+6:18:19 PM: Error during npm install
+6:18:19 PM: Failing build: Failed to install dependencies
+6:18:19 PM: Finished processing build request in 9.249s
