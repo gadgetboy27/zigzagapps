@@ -8,6 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Clock, ShoppingBag } from "lucide-react";
 
+// Helper function to get the demo proxy base URL (same logic as API calls)
+const getDemoProxyBaseUrl = () => {
+  return import.meta.env.VITE_API_BASE_URL || '';
+};
+
 export default function AppsShowcase() {
   const [activeFilter, setActiveFilter] = useState("all");
   const [demoModalOpen, setDemoModalOpen] = useState(false);
@@ -30,8 +35,12 @@ export default function AppsShowcase() {
       if (app && data.sessionToken) {
         setCurrentDemoApp(app);
         setDemoModalOpen(true);
-        // Open demo in new window with protected URL
-        const demoWindow = window.open(`/api/demo-proxy/${data.sessionToken}`, '_blank');
+        // Open demo in new window with protected URL - use full URL for cross-platform compatibility
+        const baseUrl = getDemoProxyBaseUrl();
+        const demoProxyUrl = baseUrl 
+          ? `${baseUrl.replace(/\/$/, '')}/api/demo-proxy/${data.sessionToken}`
+          : `/api/demo-proxy/${data.sessionToken}`;
+        const demoWindow = window.open(demoProxyUrl, '_blank');
         
         // Start countdown timer
         const expiresAt = new Date(data.expiresAt);
