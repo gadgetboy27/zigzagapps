@@ -18,6 +18,7 @@ export default function AppsShowcase() {
   const [demoModalOpen, setDemoModalOpen] = useState(false);
   const [currentDemoApp, setCurrentDemoApp] = useState<App | null>(null);
   const [demoExpiredApp, setDemoExpiredApp] = useState<App | null>(null);
+  const [loadingAppId, setLoadingAppId] = useState<string | null>(null);
   const { toast } = useToast();
 
   const { data: apps = [], isLoading } = useQuery<App[]>({
@@ -27,10 +28,12 @@ export default function AppsShowcase() {
   // Demo access mutation
   const demoAccessMutation = useMutation({
     mutationFn: async (appId: string) => {
+      setLoadingAppId(appId); // Set loading state for specific app
       const response = await apiRequest("POST", `/api/demo-access/${appId}`);
       return await response.json();
     },
     onSuccess: (data, appId) => {
+      setLoadingAppId(null); // Clear loading state
       const app = apps.find(a => a.id === appId);
       if (app && data.sessionToken) {
         setCurrentDemoApp(app);
@@ -65,7 +68,8 @@ export default function AppsShowcase() {
         setTimeout(() => clearInterval(interval), 10 * 60 * 1000);
       }
     },
-    onError: (error: any) => {
+    onError: (error: any, appId) => {
+      setLoadingAppId(null); // Clear loading state on error
       console.error("Demo access error:", error);
       
       if (error.requiresPurchase) {
@@ -201,12 +205,12 @@ export default function AppsShowcase() {
                   {app.demoUrl && (
                     <Button
                       onClick={() => handleDemoAccess(app)}
-                      disabled={demoAccessMutation.isPending}
+                      disabled={loadingAppId === app.id}
                       className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
                       data-testid={`app-demo-${app.id}`}
                     >
                       <Clock className="w-4 h-4 mr-2" />
-                      {demoAccessMutation.isPending ? "Loading..." : "Demo (10 min)"}
+                      {loadingAppId === app.id ? "Loading..." : "Demo (10 min)"}
                     </Button>
                   )}
                   {app.githubUrl && (
