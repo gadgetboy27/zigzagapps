@@ -35,7 +35,7 @@ args = "npm run dev"
 waitForPort = 5000
 
 [agent]
-integrations = ["javascript_object_storage:1.0.0", "javascript_stripe:1.0.0", "javascript_log_in_with_replit:1.0.0", "javascript_database:1.0.0", "javascript_google_analytics:1.0.0", "javascript_sendgrid:1.0.0"]
+integrations = ["javascript_object_storage:1.0.0", "javascript_stripe:1.0.0", "javascript_log_in_with_replit:1.0.0", "javascript_database:1.0.0", "javascript_google_analytics:1.0.0", "javascript_sendgrid:1.0.0", "github:1.0.0"]
 
 [[ports]]
 localPort = 5000
@@ -68,6 +68,10 @@ externalPort = 3003
 [[ports]]
 localPort = 46219
 externalPort = 3001
+
+[[ports]]
+localPort = 46315
+externalPort = 8000
 
 [[ports]]
 localPort = 46747
