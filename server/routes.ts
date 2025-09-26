@@ -405,6 +405,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         },
         on: {
           proxyReq: (proxyReq: any, req: IncomingMessage) => {
+            // Fix path rewriting issue - manually set the path if it's undefined
+            if (!proxyReq.path || proxyReq.path === 'undefined') {
+              const tokenPath = `/api/demo-proxy/${token}`;
+              let relativePath = req.url?.replace(tokenPath, '') || '/';
+              if (!relativePath.startsWith('/')) {
+                relativePath = '/' + relativePath;
+              }
+              proxyReq.path = relativePath;
+            }
+            
             // DEBUG: Log the final request being made
             console.log('  🚀 PROXY REQUEST:');
             console.log('    Target host:', proxyReq.getHeader('host'));
