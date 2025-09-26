@@ -224,12 +224,12 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-// Temporary: Using MemStorage due to Neon database endpoint disabled
-// TODO: Switch back to DatabaseStorage once Neon issue is resolved
+// DatabaseStorage disabled due to persistent Neon endpoint issue
 // export const storage = new DatabaseStorage();
 
-// Temporary in-memory storage with existing data
-export class MemStorage implements IStorage {
+// Working MemStorage with proper demo session support
+class MemStorage implements IStorage {
+  private demoSessions: DemoSession[] = [];
   private apps: App[] = [
     {
       id: "9aa868f3-75eb-4347-8c16-57d2db73a890",
@@ -464,38 +464,81 @@ export class MemStorage implements IStorage {
     return undefined; // Simplified for demo
   }
 
-  // Demo session methods (minimal implementation)
+  // Demo session methods (working implementation)
   async createDemoSession(sessionData: InsertDemoSession): Promise<DemoSession> {
-    return {
+    const session: DemoSession = {
       id: crypto.randomUUID(),
       ...sessionData,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      createdAt: new Date()
     } as DemoSession;
+    this.demoSessions.push(session);
+    return session;
   }
 
   async getDemoSessionByToken(token: string): Promise<DemoSession | undefined> {
-    return undefined; // Simplified for demo
+    return this.demoSessions.find(s => s.sessionToken === token);
   }
 
   async validateDemoSession(token: string, requestIp?: string, requestUserAgent?: string): Promise<{ valid: boolean; session?: DemoSession; app?: App; error?: string }> {
-    return { valid: false, error: "Demo sessions not available in temporary mode" };
+    const session = this.demoSessions.find(s => s.sessionToken === token);
+    
+    if (!session) {
+      return { valid: false, error: 'Session not found' };
+    }
+
+    const app = this.apps.find(a => a.id === session.appId);
+    const now = new Date();
+    const endTime = new Date(session.endTime);
+
+    // Check if session is active and not expired
+    if (!session.isActive || now > endTime) {
+      return { valid: false, session, app, error: 'Session expired' };
+    }
+
+    // Enhanced security: Check IP binding
+    if (requestIp && session.ipAddress !== requestIp) {
+      return { valid: false, session, app, error: 'IP address mismatch - session cannot be shared' };
+    }
+
+    return { valid: true, session, app };
   }
 
   async getActiveDemoSessionsCountByIpAndApp(ipAddress: string, appId: string): Promise<number> {
-    return 0;
+    const now = new Date();
+    return this.demoSessions.filter(s => 
+      s.ipAddress === ipAddress && 
+      s.appId === appId && 
+      s.isActive && 
+      new Date(s.endTime) >= now
+    ).length;
   }
 
   async getDemoSessionsCountByIpAndAppToday(ipAddress: string, appId: string): Promise<number> {
-    return 0;
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+
+    return this.demoSessions.filter(s => 
+      s.ipAddress === ipAddress && 
+      s.appId === appId &&
+      new Date(s.createdAt) >= startOfDay && 
+      new Date(s.createdAt) <= endOfDay
+    ).length;
   }
 
   async deactivateDemoSession(id: string): Promise<void> {
-    // No-op for demo
+    const session = this.demoSessions.find(s => s.id === id);
+    if (session) {
+      session.isActive = false;
+    }
   }
 
   async cleanupExpiredDemoSessions(): Promise<number> {
-    return 0;
+    const now = new Date();
+    const expiredCount = this.demoSessions.filter(s => new Date(s.endTime) < now).length;
+    this.demoSessions = this.demoSessions.filter(s => new Date(s.endTime) >= now);
+    return expiredCount;
   }
 }
 
