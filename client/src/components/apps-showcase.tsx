@@ -22,11 +22,20 @@ export default function AppsShowcase() {
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
+  // Constants for read more functionality
+  const WORD_LIMIT = 20;
+
   // Helper function to truncate text and show read more
-  const truncateText = (text: string, wordLimit: number = 20) => {
-    const words = text.split(' ');
+  const truncateText = (text: string, wordLimit: number = WORD_LIMIT) => {
+    if (!text) return '';
+    const words = text.trim().split(/\s+/);
     if (words.length <= wordLimit) return text;
     return words.slice(0, wordLimit).join(' ') + '...';
+  };
+
+  const shouldShowReadMore = (text: string) => {
+    if (!text) return false;
+    return text.trim().split(/\s+/).length > WORD_LIMIT;
   };
 
   const toggleCardExpansion = (appId: string) => {
@@ -210,14 +219,16 @@ export default function AppsShowcase() {
               <div className="p-6">
                 <h3 className="text-xl font-bold mb-2 text-foreground" data-testid={`app-name-${app.id}`}>{app.name}</h3>
                 <div className="mb-4" data-testid={`app-description-${app.id}`}>
-                  <p className="text-muted-foreground">
+                  <p className="text-muted-foreground min-h-[3rem]">
                     {expandedCards.has(app.id) ? app.description : truncateText(app.description)}
                   </p>
-                  {app.description.split(' ').length > 20 && (
+                  {shouldShowReadMore(app.description) && (
                     <button
                       onClick={() => toggleCardExpansion(app.id)}
-                      className="text-primary hover:text-primary/80 text-sm font-medium mt-1 transition-colors"
+                      className="text-primary hover:text-primary/80 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 text-sm font-medium mt-1 transition-colors"
                       data-testid={`app-read-more-${app.id}`}
+                      aria-expanded={expandedCards.has(app.id)}
+                      aria-controls={`description-${app.id}`}
                     >
                       {expandedCards.has(app.id) ? 'Read less' : 'Read more'}
                     </button>
