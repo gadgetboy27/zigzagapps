@@ -1,10 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import type { App } from "@shared/schema";
 import AnimatedHeader from "./animated-header";
 
 export default function PremiumStore() {
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
+
+  // Constants for read more functionality
+  const WORD_LIMIT = 20;
+
+  // Helper function to truncate text and show read more
+  const truncateText = (text: string, wordLimit: number = WORD_LIMIT) => {
+    if (!text) return '';
+    const words = text.trim().split(/\s+/);
+    if (words.length <= wordLimit) return text;
+    return words.slice(0, wordLimit).join(' ') + '...';
+  };
+
+  const shouldShowReadMore = (text: string) => {
+    if (!text) return false;
+    return text.trim().split(/\s+/).length > WORD_LIMIT;
+  };
+
+  const toggleCardExpansion = (appId: string) => {
+    setExpandedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(appId)) {
+        newSet.delete(appId);
+      } else {
+        newSet.add(appId);
+      }
+      return newSet;
+    });
+  };
+
   const { data: premiumApps = [], isLoading } = useQuery<App[]>({
     queryKey: ["/api/apps"],
     select: (apps) => apps.filter(app => app.isPremium && app.price),
@@ -80,9 +110,22 @@ export default function PremiumStore() {
                 <h3 className="text-2xl font-bold mb-2 text-foreground" data-testid={`premium-app-name-${app.id}`}>
                   {app.name}
                 </h3>
-                <p className="text-muted-foreground mb-4" data-testid={`premium-app-description-${app.id}`}>
-                  {app.longDescription || app.description}
-                </p>
+                <div className="mb-4" data-testid={`premium-app-description-${app.id}`}>
+                  <p className="text-muted-foreground min-h-[3rem]">
+                    {expandedCards.has(app.id) ? (app.longDescription || app.description) : truncateText(app.longDescription || app.description)}
+                  </p>
+                  {shouldShowReadMore(app.longDescription || app.description) && (
+                    <button
+                      onClick={() => toggleCardExpansion(app.id)}
+                      className="text-primary hover:text-primary/80 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 text-sm font-medium mt-1 transition-colors"
+                      data-testid={`premium-app-read-more-${app.id}`}
+                      aria-expanded={expandedCards.has(app.id)}
+                      aria-controls={`description-${app.id}`}
+                    >
+                      {expandedCards.has(app.id) ? 'Read less' : 'Read more'}
+                    </button>
+                  )}
+                </div>
                 <div className="flex items-center mb-4">
                   <span className="text-3xl font-bold text-primary" data-testid={`premium-app-price-${app.id}`}>
                     ${app.price}
