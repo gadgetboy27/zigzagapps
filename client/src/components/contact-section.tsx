@@ -90,35 +90,6 @@ export default function ContactSection() {
                   </div>
                 </a>
                 
-                <a 
-                  href="tel:+64218535579"
-                  className="flex items-center hover:bg-muted/50 p-2 rounded-lg transition-colors group"
-                  data-testid="contact-phone"
-                >
-                  <div className="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center mr-4 group-hover:bg-secondary/80 transition-colors">
-                    <i className="fas fa-phone text-secondary-foreground"></i>
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-foreground group-hover:text-primary transition-colors">Phone</h4>
-                    <p className="text-muted-foreground group-hover:text-foreground transition-colors">021 853579</p>
-                  </div>
-                </a>
-                
-                <a 
-                  href="https://maps.google.com/maps?q=21/3+Inanga+Street,+Hobsonville,+Auckland+NZ"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center hover:bg-muted/50 p-2 rounded-lg transition-colors group"
-                  data-testid="contact-location"
-                >
-                  <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center mr-4 group-hover:bg-accent/80 transition-colors">
-                    <i className="fas fa-map-marker-alt text-accent-foreground"></i>
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-foreground group-hover:text-primary transition-colors">Location</h4>
-                    <p className="text-muted-foreground group-hover:text-foreground transition-colors">21/3 Inanga Street, Hobsonville, Auckland NZ</p>
-                  </div>
-                </a>
               </div>
               
               {/* Social Links */}
@@ -138,15 +109,6 @@ export default function ContactSection() {
                     data-testid="social-linkedin"
                   >
                     <i className="fab fa-linkedin"></i>
-                  </a>
-                  <a 
-                    href="https://wa.me/64218535579" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
-                    data-testid="social-whatsapp"
-                  >
-                    <i className="fab fa-whatsapp"></i>
                   </a>
                   <a 
                     href="https://instagram.com/henrypeti.dev" 
