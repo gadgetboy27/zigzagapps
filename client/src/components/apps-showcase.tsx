@@ -19,7 +19,27 @@ export default function AppsShowcase() {
   const [currentDemoApp, setCurrentDemoApp] = useState<App | null>(null);
   const [demoExpiredApp, setDemoExpiredApp] = useState<App | null>(null);
   const [loadingAppId, setLoadingAppId] = useState<string | null>(null);
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   const { toast } = useToast();
+
+  // Helper function to truncate text and show read more
+  const truncateText = (text: string, wordLimit: number = 20) => {
+    const words = text.split(' ');
+    if (words.length <= wordLimit) return text;
+    return words.slice(0, wordLimit).join(' ') + '...';
+  };
+
+  const toggleCardExpansion = (appId: string) => {
+    setExpandedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(appId)) {
+        newSet.delete(appId);
+      } else {
+        newSet.add(appId);
+      }
+      return newSet;
+    });
+  };
 
   const { data: apps = [], isLoading } = useQuery<App[]>({
     queryKey: ["/api/apps"],
@@ -189,7 +209,20 @@ export default function AppsShowcase() {
               />
               <div className="p-6">
                 <h3 className="text-xl font-bold mb-2 text-foreground" data-testid={`app-name-${app.id}`}>{app.name}</h3>
-                <p className="text-muted-foreground mb-4" data-testid={`app-description-${app.id}`}>{app.description}</p>
+                <div className="mb-4" data-testid={`app-description-${app.id}`}>
+                  <p className="text-muted-foreground">
+                    {expandedCards.has(app.id) ? app.description : truncateText(app.description)}
+                  </p>
+                  {app.description.split(' ').length > 20 && (
+                    <button
+                      onClick={() => toggleCardExpansion(app.id)}
+                      className="text-primary hover:text-primary/80 text-sm font-medium mt-1 transition-colors"
+                      data-testid={`app-read-more-${app.id}`}
+                    >
+                      {expandedCards.has(app.id) ? 'Read less' : 'Read more'}
+                    </button>
+                  )}
+                </div>
                 <div className="flex flex-wrap gap-2 mb-4">
                   {app.technologies?.map((tech, index) => (
                     <span 
