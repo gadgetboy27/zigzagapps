@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Homepage -->
   <url>
-    <loc>https://zigzagapps.net/</loc>
+    <loc>https://zigzagapps.com/</loc>
     <lastmod>2025-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -10,14 +10,14 @@
   
   <!-- Legal Pages -->
   <url>
-    <loc>https://zigzagapps.net/privacy</loc>
+    <loc>https://zigzagapps.com/privacy</loc>
     <lastmod>2025-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   
   <url>
-    <loc>https://zigzagapps.net/terms</loc>
+    <loc>https://zigzagapps.com/terms</loc>
     <lastmod>2025-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>

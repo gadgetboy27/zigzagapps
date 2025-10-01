@@ -5,4 +5,4 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://zigzagapps.net/sitemap.xml
+Sitemap: https://zigzagapps.com/sitemap.xml

@@ -47,6 +47,17 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
+  // Serve sitemap.xml and robots.txt with correct content-type
+  app.get('/sitemap.xml', (_req, res) => {
+    res.setHeader('Content-Type', 'application/xml');
+    res.sendFile('sitemap.xml', { root: './client/public' });
+  });
+
+  app.get('/robots.txt', (_req, res) => {
+    res.type('text/plain');
+    res.sendFile('robots.txt', { root: './client/public' });
+  });
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
