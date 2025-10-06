@@ -3,7 +3,6 @@ import {
   testimonials, 
   contactSubmissions, 
   purchases,
-  demoSessions,
   type App, 
   type InsertApp,
   type Testimonial,
@@ -11,12 +10,10 @@ import {
   type ContactSubmission,
   type InsertContact,
   type Purchase,
-  type InsertPurchase,
-  type DemoSession,
-  type InsertDemoSession
+  type InsertPurchase
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and, gte, lt, count } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
   // Apps
@@ -37,15 +34,6 @@ export interface IStorage {
   getPurchaseByPaymentIntent(paymentIntentId: string): Promise<Purchase | undefined>;
   updatePurchaseStatus(id: string, status: string): Promise<Purchase>;
   getPurchaseWithApp(id: string): Promise<(Purchase & { app: App }) | undefined>;
-  
-  // Demo Sessions
-  createDemoSession(session: InsertDemoSession): Promise<DemoSession>;
-  getDemoSessionByToken(token: string): Promise<DemoSession | undefined>;
-  validateDemoSession(token: string, requestIp?: string, requestUserAgent?: string): Promise<{ valid: boolean; session?: DemoSession; app?: App; error?: string }>;
-  getActiveDemoSessionsCountByIpAndApp(ipAddress: string, appId: string): Promise<number>;
-  getDemoSessionsCountByIpAndAppToday(ipAddress: string, appId: string): Promise<number>;
-  deactivateDemoSession(id: string): Promise<void>;
-  cleanupExpiredDemoSessions(): Promise<number>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -120,117 +108,13 @@ export class DatabaseStorage implements IStorage {
       app: result[0].app
     };
   }
-
-  // Demo Sessions
-  async createDemoSession(sessionData: InsertDemoSession): Promise<DemoSession> {
-    const [session] = await db.insert(demoSessions).values(sessionData as any).returning();
-    return session;
-  }
-
-  async getDemoSessionByToken(token: string): Promise<DemoSession | undefined> {
-    const [session] = await db.select().from(demoSessions)
-      .where(eq(demoSessions.sessionToken, token));
-    return session;
-  }
-
-  async validateDemoSession(token: string, requestIp?: string, requestUserAgent?: string): Promise<{ valid: boolean; session?: DemoSession; app?: App; error?: string }> {
-    const result = await db.select({
-      session: demoSessions,
-      app: apps
-    })
-    .from(demoSessions)
-    .innerJoin(apps, eq(demoSessions.appId, apps.id))
-    .where(eq(demoSessions.sessionToken, token));
-
-    if (result.length === 0) {
-      return { valid: false, error: 'Session not found' };
-    }
-
-    const { session, app } = result[0];
-    const now = new Date();
-    const endTime = new Date(session.endTime);
-
-    // Check if session is active and not expired
-    if (!session.isActive || now > endTime) {
-      return { valid: false, session, app, error: 'Session expired' };
-    }
-
-    // Relaxed IP validation for demo sessions in cloud environment
-    // Note: Strict IP binding disabled due to cloud networking proxy issues
-    // if (requestIp && session.ipAddress !== requestIp) {
-    //   return { valid: false, session, app, error: 'IP address mismatch - session cannot be shared' };
-    // }
-
-    // Optional: Check User-Agent binding for additional security
-    if (requestUserAgent && session.userAgent && session.userAgent !== requestUserAgent) {
-      return { valid: false, session, app, error: 'Session security violation - please request a new demo' };
-    }
-
-    return { valid: true, session, app };
-  }
-
-  async getActiveDemoSessionsCountByIpAndApp(ipAddress: string, appId: string): Promise<number> {
-    const now = new Date();
-    const [result] = await db.select({ count: count() })
-      .from(demoSessions)
-      .where(
-        and(
-          eq(demoSessions.ipAddress, ipAddress),
-          eq(demoSessions.appId, appId),
-          eq(demoSessions.isActive, true),
-          gte(demoSessions.endTime, now)
-        )
-      );
-    return result?.count || 0;
-  }
-
-  async getDemoSessionsCountByIpAndAppToday(ipAddress: string, appId: string): Promise<number> {
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59, 999);
-
-    const [result] = await db.select({ count: count() })
-      .from(demoSessions)
-      .where(
-        and(
-          eq(demoSessions.ipAddress, ipAddress),
-          eq(demoSessions.appId, appId),
-          gte(demoSessions.createdAt, startOfDay),
-          lt(demoSessions.createdAt, endOfDay)
-        )
-      );
-    return result?.count || 0;
-  }
-
-  async deactivateDemoSession(id: string): Promise<void> {
-    await db.update(demoSessions)
-      .set({ isActive: false })
-      .where(eq(demoSessions.id, id));
-  }
-
-  async cleanupExpiredDemoSessions(): Promise<number> {
-    const now = new Date();
-    const result = await db.update(demoSessions)
-      .set({ isActive: false })
-      .where(
-        and(
-          eq(demoSessions.isActive, true),
-          lt(demoSessions.endTime, now)
-        )
-      )
-      .returning({ id: demoSessions.id });
-    
-    return result.length;
-  }
 }
 
 // DatabaseStorage disabled due to persistent Neon endpoint issue
 // export const storage = new DatabaseStorage();
 
-// Working MemStorage with proper demo session support
+// Working MemStorage - simple in-memory storage
 class MemStorage implements IStorage {
-  private demoSessions: DemoSession[] = [];
   private apps: App[] = [
     {
       id: "9aa868f3-75eb-4347-8c16-57d2db73a890",
@@ -257,7 +141,7 @@ class MemStorage implements IStorage {
       price: "49.99",
       category: "web",
       imageUrl: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&h=400",
-      demoUrl: "https://react-calculator-app-alpha.vercel.app",
+      demoUrl: "https://stock-insight-gadgetboy27.replit.app",
       githubUrl: "",
       technologies: ["React","TypeScript","Financial APIs","Chart.js","Market Data"],
       features: ["Real-time market data","Historical cycle analysis","Gold & Bitcoin timing","Seasonal patterns","Buy/sell signals","Multi-asset tracking","Investment calendar","Risk assessment"],
@@ -274,7 +158,7 @@ class MemStorage implements IStorage {
       price: null,
       category: "web",
       imageUrl: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&h=400",
-      demoUrl: "https://shopping-cart-react-demo.netlify.app",
+      demoUrl: "https://electrifiedgarage.net",
       githubUrl: "https://github.com/gadgetboy27/GadgetStore",
       technologies: ["React","TypeScript","E-commerce","Payment Processing","Database"],
       features: ["Product catalog","Shopping cart","User authentication","Payment integration","Product reviews","Inventory management","Order tracking","Mobile responsive"],
@@ -291,7 +175,7 @@ class MemStorage implements IStorage {
       price: "79.99",
       category: "web",
       imageUrl: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=800&h=400",
-      demoUrl: "https://weather-app-react-typescript.netlify.app",
+      demoUrl: "https://stock-compass-gadgetboy27.replit.app",
       githubUrl: "",
       technologies: ["Python","Streamlit","Yahoo Finance API","Real-time Data","ThreadPoolExecutor"],
       features: ["V-Score valuation metrics","Momentum indicators (RSI, MACD)","Quality metrics (ROE, margins)","Risk assessment","AI-powered scoring","Parallel processing","Export to CSV","Sector analysis"],
@@ -308,7 +192,7 @@ class MemStorage implements IStorage {
       price: "99.99",
       category: "mobile",
       imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&h=400",
-      demoUrl: "https://todo-app-react-hooks.netlify.app",
+      demoUrl: "https://mobile-invest-gadgetboy27.replit.app",
       githubUrl: "",
       technologies: ["AI/ML","Python","Real-time Data","Predictive Analytics","Mobile-First"],
       features: ["AI stock analysis","Market trend prediction","Investment recommendations","Risk assessment","Portfolio optimization","Real-time alerts","Mobile responsive"],
@@ -325,7 +209,7 @@ class MemStorage implements IStorage {
       price: null,
       category: "web",
       imageUrl: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&h=400",
-      demoUrl: "https://devtools.henrypeti.dev",
+      demoUrl: "https://nutritrak.replit.app",
       githubUrl: "https://github.com/gadgetboy27/dev-tools-suite",
       technologies: ["Vanilla JavaScript","CSS3","Web APIs","Service Workers"],
       features: ["JSON formatter","Base64 encoder","Regex tester","Color tools","Works offline"],
@@ -463,84 +347,6 @@ class MemStorage implements IStorage {
 
   async getPurchaseWithApp(id: string): Promise<(Purchase & { app: App }) | undefined> {
     return undefined; // Simplified for demo
-  }
-
-  // Demo session methods (working implementation)
-  async createDemoSession(sessionData: InsertDemoSession): Promise<DemoSession> {
-    const session: DemoSession = {
-      id: crypto.randomUUID(),
-      ...sessionData,
-      createdAt: new Date()
-    } as DemoSession;
-    this.demoSessions.push(session);
-    return session;
-  }
-
-  async getDemoSessionByToken(token: string): Promise<DemoSession | undefined> {
-    return this.demoSessions.find(s => s.sessionToken === token);
-  }
-
-  async validateDemoSession(token: string, requestIp?: string, requestUserAgent?: string): Promise<{ valid: boolean; session?: DemoSession; app?: App; error?: string }> {
-    const session = this.demoSessions.find(s => s.sessionToken === token);
-    
-    if (!session) {
-      return { valid: false, error: 'Session not found' };
-    }
-
-    const app = this.apps.find(a => a.id === session.appId);
-    const now = new Date();
-    const endTime = new Date(session.endTime);
-
-    // Check if session is active and not expired
-    if (!session.isActive || now > endTime) {
-      return { valid: false, session, app, error: 'Session expired' };
-    }
-
-    // Relaxed IP validation for demo sessions in cloud environment
-    // Note: Strict IP binding disabled due to cloud networking proxy issues
-    // if (requestIp && session.ipAddress !== requestIp) {
-    //   return { valid: false, session, app, error: 'IP address mismatch - session cannot be shared' };
-    // }
-
-    return { valid: true, session, app };
-  }
-
-  async getActiveDemoSessionsCountByIpAndApp(ipAddress: string, appId: string): Promise<number> {
-    const now = new Date();
-    return this.demoSessions.filter(s => 
-      s.ipAddress === ipAddress && 
-      s.appId === appId && 
-      s.isActive && 
-      new Date(s.endTime) >= now
-    ).length;
-  }
-
-  async getDemoSessionsCountByIpAndAppToday(ipAddress: string, appId: string): Promise<number> {
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59, 999);
-
-    return this.demoSessions.filter(s => 
-      s.ipAddress === ipAddress && 
-      s.appId === appId &&
-      new Date(s.createdAt) >= startOfDay && 
-      new Date(s.createdAt) <= endOfDay
-    ).length;
-  }
-
-  async deactivateDemoSession(id: string): Promise<void> {
-    const session = this.demoSessions.find(s => s.id === id);
-    if (session) {
-      session.isActive = false;
-    }
-  }
-
-  async cleanupExpiredDemoSessions(): Promise<number> {
-    const now = new Date();
-    const expiredCount = this.demoSessions.filter(s => new Date(s.endTime) < now).length;
-    this.demoSessions = this.demoSessions.filter(s => new Date(s.endTime) >= now);
-    return expiredCount;
   }
 }
 

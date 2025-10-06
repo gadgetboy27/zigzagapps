@@ -1,26 +1,13 @@
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import type { App } from "@shared/schema";
 import AnimatedHeader from "./animated-header";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Clock, ShoppingBag } from "lucide-react";
-
-// Helper function to get the demo proxy base URL (same logic as API calls)
-const getDemoProxyBaseUrl = () => {
-  return import.meta.env.VITE_API_BASE_URL || '';
-};
+import { ExternalLink } from "lucide-react";
 
 export default function AppsShowcase() {
   const [activeFilter, setActiveFilter] = useState("all");
-  const [demoModalOpen, setDemoModalOpen] = useState(false);
-  const [currentDemoApp, setCurrentDemoApp] = useState<App | null>(null);
-  const [demoExpiredApp, setDemoExpiredApp] = useState<App | null>(null);
-  const [loadingAppId, setLoadingAppId] = useState<string | null>(null);
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
-  const { toast } = useToast();
 
   // Constants for read more functionality
   const WORD_LIMIT = 20;
@@ -50,86 +37,9 @@ export default function AppsShowcase() {
     });
   };
 
-  const { data: apps = [], isLoading } = useQuery<App[]>({
+  const { data: apps = [], isLoading} = useQuery<App[]>({
     queryKey: ["/api/apps"],
   });
-
-  // Demo access mutation
-  const demoAccessMutation = useMutation({
-    mutationFn: async (appId: string) => {
-      setLoadingAppId(appId); // Set loading state for specific app
-      const response = await apiRequest("POST", `/api/demo-access/${appId}`);
-      return await response.json();
-    },
-    onSuccess: (data, appId) => {
-      setLoadingAppId(null); // Clear loading state
-      const app = apps.find(a => a.id === appId);
-      if (app && data.sessionToken) {
-        setCurrentDemoApp(app);
-        setDemoModalOpen(true);
-        // Open demo in new window with protected URL - use full URL for cross-platform compatibility
-        const baseUrl = getDemoProxyBaseUrl();
-        const demoProxyUrl = baseUrl 
-          ? `${baseUrl.replace(/\/$/, '')}/api/demo-proxy/${data.sessionToken}`
-          : `/api/demo-proxy/${data.sessionToken}`;
-        const demoWindow = window.open(demoProxyUrl, '_blank');
-        
-        // Start countdown timer
-        const expiresAt = new Date(data.expiresAt);
-        const checkExpiry = () => {
-          if (new Date() >= expiresAt) {
-            setDemoExpiredApp(app);
-            setCurrentDemoApp(null);
-            setDemoModalOpen(false);
-            toast({
-              title: "Demo Expired",
-              description: "Your demo session has expired. Purchase the app for unlimited access.",
-              variant: "destructive",
-            });
-            if (demoWindow && !demoWindow.closed) {
-              demoWindow.close();
-            }
-          }
-        };
-        
-        // Check every 5 seconds
-        const interval = setInterval(checkExpiry, 5000);
-        setTimeout(() => clearInterval(interval), 10 * 60 * 1000);
-      }
-    },
-    onError: (error: any, appId) => {
-      setLoadingAppId(null); // Clear loading state on error
-      console.error("Demo access error:", error);
-      
-      if (error.requiresPurchase) {
-        setDemoExpiredApp(error.app);
-        toast({
-          title: "Demo Limit Reached",
-          description: error.message,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Demo Access Failed",
-          description: error.message || "Failed to access demo. Please try again.",
-          variant: "destructive",
-        });
-      }
-    },
-  });
-
-  const handleDemoAccess = (app: App) => {
-    if (!app.demoUrl) {
-      toast({
-        title: "Demo Not Available",
-        description: "This app doesn't have a demo available.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    demoAccessMutation.mutate(app.id);
-  };
 
   const filteredApps = activeFilter === "all" 
     ? apps 
@@ -247,15 +157,18 @@ export default function AppsShowcase() {
                 </div>
                 <div className="flex gap-3">
                   {app.demoUrl && (
-                    <Button
-                      onClick={() => handleDemoAccess(app)}
-                      disabled={loadingAppId === app.id}
-                      className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
+                    <a
+                      href={app.demoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1"
                       data-testid={`app-demo-${app.id}`}
                     >
-                      <Clock className="w-4 h-4 mr-2" />
-                      {loadingAppId === app.id ? "Loading..." : "Demo (10 min)"}
-                    </Button>
+                      <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        Try Demo
+                      </Button>
+                    </a>
                   )}
                   {app.githubUrl && (
                     <a 
@@ -282,102 +195,6 @@ export default function AppsShowcase() {
           </div>
         )}
       </div>
-
-      {/* Demo Session Timer Modal */}
-      <Dialog open={demoModalOpen} onOpenChange={setDemoModalOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Clock className="w-5 h-5 text-primary" />
-              Demo Active: {currentDemoApp?.name}
-            </DialogTitle>
-            <DialogDescription>
-              Your demo session is active for 10 minutes. The demo will automatically close when the session expires.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="bg-muted rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Session Status</span>
-                <span className="text-sm text-primary">Active</span>
-              </div>
-              <div className="text-xs text-muted-foreground mt-1">
-                Demo will expire in approximately 10 minutes
-              </div>
-            </div>
-            
-            {currentDemoApp?.isPremium && currentDemoApp.price && (
-              <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <ShoppingBag className="w-4 h-4 text-primary" />
-                  <span className="font-medium text-primary">Like what you see?</span>
-                </div>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Purchase {currentDemoApp.name} for unlimited access and all premium features.
-                </p>
-                <Button 
-                  size="sm" 
-                  className="w-full"
-                  onClick={() => {
-                    // Navigate to checkout - you can implement this based on your routing
-                    window.location.href = `/checkout?app=${currentDemoApp.id}`;
-                  }}
-                  data-testid="demo-purchase-button"
-                >
-                  Purchase for ${currentDemoApp.price}
-                </Button>
-              </div>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Demo Expired / Purchase Conversion Modal */}
-      <Dialog open={!!demoExpiredApp} onOpenChange={() => setDemoExpiredApp(null)}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-destructive">
-              <Clock className="w-5 h-5" />
-              Demo Session Expired
-            </DialogTitle>
-            <DialogDescription>
-              Your demo session for {demoExpiredApp?.name} has expired or you've reached the daily limit.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="bg-destructive/5 border border-destructive/20 rounded-lg p-4">
-              <h4 className="font-medium text-destructive mb-2">Want to continue?</h4>
-              <p className="text-sm text-muted-foreground">
-                Purchase {demoExpiredApp?.name} for unlimited access with no time restrictions.
-              </p>
-            </div>
-            
-            {demoExpiredApp?.isPremium && demoExpiredApp.price && (
-              <div className="space-y-3">
-                <Button 
-                  className="w-full"
-                  onClick={() => {
-                    // Navigate to checkout - you can implement this based on your routing
-                    window.location.href = `/checkout?app=${demoExpiredApp.id}`;
-                  }}
-                  data-testid="expired-demo-purchase-button"
-                >
-                  <ShoppingBag className="w-4 h-4 mr-2" />
-                  Purchase for ${demoExpiredApp.price}
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => setDemoExpiredApp(null)}
-                  data-testid="expired-demo-close-button"
-                >
-                  Maybe Later
-                </Button>
-              </div>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
     </section>
   );
 }
