@@ -47,7 +47,7 @@ export default function PrivacyPolicy() {
                 <li>Personal information you provide (name, email, phone number)</li>
                 <li>Technical information about your device and browser</li>
                 <li>Usage data and analytics about how you interact with our apps</li>
-                <li>Payment information when purchasing premium apps</li>
+                <li>Sales information when purchasing premium apps</li>
               </ul>
             </section>
 
