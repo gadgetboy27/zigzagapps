@@ -28,7 +28,7 @@ export default function Home() {
   
   useEffect(() => {
     // SEO and document setup
-    document.title = "Swipe Right NZ - Henry Peti | Modern App Developer & Entrepreneur | Portfolio & App Store";
+    document.title = "Swipe Right Apps - Henry Peti | Modern App Developer & Entrepreneur | Portfolio & App Store";
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
