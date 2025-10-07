@@ -10,8 +10,8 @@ import Testimonials from "@/components/testimonials";
 import ContactSection from "@/components/contact-section";
 import ThemeSelector from "@/components/theme-selector";
 import zigzagLogoTshirt from "@assets/logo-t-shirt-zig-zag_1758166586152.png";
-import zigzagLogoRedBlack from "@assets/zigzag_redBlack_1758166406884.png";
-import newDarkLogo from "@assets/zig-zag-man-black-bg_1758180362731.jpg";
+import zigzagLogoRedBlack from "@assets/swipe-right.png";
+import newDarkLogo from "@assets/swipe.png";
 import { useTheme } from "@/contexts/theme-context";
 
 export default function Home() {
@@ -55,7 +55,7 @@ export default function Home() {
             <div className="flex items-center h-12" data-testid="logo">
               <img 
                 src={getNavbarLogoAsset()} 
-                alt="ZigZag Logo" 
+                alt="swipe right Logo" 
                 className="h-full w-auto object-contain"
                 style={{ imageRendering: 'crisp-edges' }}
               />
