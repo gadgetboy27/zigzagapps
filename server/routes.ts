@@ -39,7 +39,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       'http://localhost:5173', // Vite dev server
       'http://localhost:4173', // Vite preview
       'http://localhost:5000', // Local production
-      'https://zigzagapps.net', // Production domain
+      'https://swiperight.nz', // Production domain
     ];
     
     // Add Netlify domains from environment variable
@@ -209,7 +209,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               <p><strong>Submitted:</strong> ${new Date(contact.createdAt || new Date()).toLocaleString()}</p>
               <hr>
               <p style="color: #666; font-size: 12px;">
-                This email was sent from your ZIGZAG APPS portfolio contact form.
+                This email was sent from your Swipe Right NZ portfolio contact form.
               </p>
             `,
           });
@@ -359,7 +359,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                     
                     <hr style="margin: 30px 0; border: none; border-top: 1px solid #dee2e6;">
                     <p style="color: #6c757d; font-size: 12px; text-align: center;">
-                      This email was sent from ZIGZAG APPS. You received this because you purchased ${purchaseWithApp.app.name}.
+                      This email was sent from Swipe Right NZ. You received this because you purchased ${purchaseWithApp.app.name}.
                     </p>
                   </div>
                 `,

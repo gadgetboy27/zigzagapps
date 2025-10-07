@@ -1,8 +1,8 @@
-# Robots.txt for ZIGZAG APPS
+# Robots.txt for Swipe Right NZ
 # Allow all search engines to crawl the site
 
 User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://zigzagapps.com/sitemap.xml
+Sitemap: https://swiperight.nz/sitemap.xml

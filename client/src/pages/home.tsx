@@ -9,9 +9,8 @@ import PremiumStore from "@/components/premium-store";
 import Testimonials from "@/components/testimonials";
 import ContactSection from "@/components/contact-section";
 import ThemeSelector from "@/components/theme-selector";
-import zigzagLogoTshirt from "@assets/logo-t-shirt-zig-zag_1758166586152.png";
-import zigzagLogoRedBlack from "@assets/swipe.png";
-import newDarkLogo from "@assets/swipe-right.png";
+import swipeLogo from "@assets/swipe.png";
+import swipeRightLogo from "@assets/swipe-right.png";
 import { useTheme } from "@/contexts/theme-context";
 
 export default function Home() {
@@ -20,22 +19,20 @@ export default function Home() {
   
   // Select appropriate navbar logo asset based on theme
   const getNavbarLogoAsset = () => {
-    if (theme === 'light') {
-      return zigzagLogoRedBlack; // Red/black version for light theme
-    } else if (theme === 'dark') {
-      return newDarkLogo; // New dark mode logo
-    } else { // blue theme
-      return newDarkLogo; // Same logo as dark mode
+    if (theme === 'dark') {
+      return swipeRightLogo; // swipe-right.png for dark mode
+    } else {
+      return swipeLogo; // swipe.png for light and blue themes
     }
   };
   
   useEffect(() => {
     // SEO and document setup
-    document.title = "ZIGZAG APPS - Henry Peti | Modern App Developer & Entrepreneur | Portfolio & App Store";
+    document.title = "Swipe Right NZ - Henry Peti | Modern App Developer & Entrepreneur | Portfolio & App Store";
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'ZIGZAG APPS by Henry Peti - Software Engineer, App Developer & Entrepreneur. Discover cutting-edge mobile apps, web applications, and digital solutions. Buy premium apps and explore innovative development projects.');
+      metaDescription.setAttribute('content', 'Swipe Right NZ by Henry Peti - Software Engineer, App Developer & Entrepreneur. Discover cutting-edge mobile apps, web applications, and digital solutions. Buy premium apps and explore innovative development projects.');
     }
   }, []);
   
@@ -55,7 +52,7 @@ export default function Home() {
             <div className="flex items-center h-12" data-testid="logo">
               <img 
                 src={getNavbarLogoAsset()} 
-                alt="swipe right Logo" 
+                alt="Swipe Right NZ Logo" 
                 className="h-full w-auto object-contain"
                 style={{ imageRendering: 'crisp-edges' }}
               />
@@ -94,7 +91,7 @@ export default function Home() {
       <footer className="py-12 border-t border-border">
         <div className="container mx-auto px-6">
           <div className="text-center">
-            <div className="text-2xl font-bold text-gradient font-mono mb-4">ZIGZAG APPS</div>
+            <div className="text-2xl font-bold text-gradient font-mono mb-4">Swipe Right NZ</div>
             <p className="text-muted-foreground mb-6">Building the future, one app at a time.</p>
             <div className="flex justify-center space-x-6 mb-6">
               <a href="#apps" className="text-muted-foreground hover:text-primary transition-colors">Apps</a>
@@ -103,7 +100,7 @@ export default function Home() {
               <a href="/privacy" className="text-muted-foreground hover:text-primary transition-colors">Privacy</a>
               <a href="/terms" className="text-muted-foreground hover:text-primary transition-colors">Terms</a>
             </div>
-            <p className="text-muted-foreground text-sm">© 2025 zigzagapps. All rights reserved.</p>
+            <p className="text-muted-foreground text-sm">© 2025 Swipe Right NZ. All rights reserved.</p>
           </div>
         </div>
       </footer>

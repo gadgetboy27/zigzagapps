@@ -46,7 +46,7 @@ export default function PremiumStore() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <AnimatedHeader 
-              text="ZIGZAG STORE" 
+              text="PREMIUM STORE" 
               className="text-5xl md:text-6xl font-black mb-6 text-secondary"
             />
             <div className="h-4 bg-muted rounded max-w-2xl mx-auto"></div>
@@ -80,7 +80,7 @@ export default function PremiumStore() {
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <AnimatedHeader 
-            text="ZIGZAG STORE" 
+            text="PREMIUM STORE" 
             className="text-5xl md:text-6xl font-black mb-6 text-secondary"
             data-testid="store-title"
           />

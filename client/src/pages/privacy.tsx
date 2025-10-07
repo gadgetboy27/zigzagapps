@@ -3,11 +3,11 @@ import { useEffect } from "react";
 export default function PrivacyPolicy() {
   useEffect(() => {
     // SEO setup
-    document.title = "Privacy Policy - ZIGZAG APPS | Henry Peti";
+    document.title = "Privacy Policy - Swipe Right NZ | Henry Peti";
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Privacy Policy for ZIGZAG APPS by Henry Peti. Learn how we collect, use, and protect your personal information when using our services.');
+      metaDescription.setAttribute('content', 'Privacy Policy for Swipe Right NZ by Henry Peti. Learn how we collect, use, and protect your personal information when using our services.');
     }
   }, []);
 
@@ -18,7 +18,7 @@ export default function PrivacyPolicy() {
         <nav className="container mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <a href="/" className="text-xl font-bold text-primary font-mono" data-testid="logo">
-              <span className="text-gradient">ZIGZAG APPS</span>
+              <span className="text-gradient">Swipe Right NZ</span>
             </a>
             <a href="/" className="text-muted-foreground hover:text-primary transition-colors" data-testid="back-home">
               ← Back to Home
@@ -41,7 +41,7 @@ export default function PrivacyPolicy() {
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-foreground mb-4">Information We Collect</h2>
               <p className="text-muted-foreground mb-4">
-                When you use ZIGZAG APPS services, we may collect the following types of information:
+                When you use Swipe Right NZ services, we may collect the following types of information:
               </p>
               <ul className="list-disc pl-6 text-muted-foreground space-y-2">
                 <li>Personal information you provide (name, email, phone number)</li>

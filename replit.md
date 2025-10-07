@@ -1,6 +1,6 @@
 # Overview
 
-This is a full-stack portfolio and app marketplace application for Henry Peti, a software engineer and entrepreneur. The application serves as both a personal portfolio website and a premium app store where users can browse, purchase, and access Henry's software applications. Built with modern web technologies, it features a React frontend with a brutalist design aesthetic, an Express.js backend API, and PostgreSQL database integration.
+This is a full-stack portfolio and app marketplace application for Henry Peti, a software engineer and entrepreneur, operating under the brand "Swipe Right NZ" (swiperight.nz). The application serves as both a personal portfolio website and a premium app store where users can browse, purchase, and access Henry's software applications. Built with modern web technologies, it features a React frontend with a brutalist design aesthetic, an Express.js backend API, and PostgreSQL database integration.
 
 # User Preferences
 
@@ -65,6 +65,18 @@ Preferred communication style: Simple, everyday language.
 - **Asset Management**: Vite asset handling with path resolution
 - **Environment Configuration**: Environment variables for database and API keys
 - **Production Build**: Optimized client and server builds for deployment
+- **Multi-Platform Architecture**: Replit (backend), GitHub (version control), Netlify (frontend hosting) → swiperight.nz
+
+## Branding & Assets
+
+### Brand Identity
+- **Name**: Swipe Right NZ (formerly ZIGZAG APPS)
+- **Domain**: swiperight.nz
+- **Logo Assets**: 
+  - `swipe-right.png` - Used for dark mode theme
+  - `swipe.png` - Used for light and blue themes
+- **SEO Optimized**: Full migration from zigzagapps.com to swiperight.nz (sitemap, robots.txt, meta tags, Schema.org)
+- **Facebook Page**: facebook.com/SwipeRightNZ
 
 ## Database Synchronization System
 

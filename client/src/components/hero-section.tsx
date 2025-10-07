@@ -7,7 +7,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ onTypingComplete }: HeroSectionProps) {
   const [displayedText, setDisplayedText] = useState("");
-  const fullText = "SWIPE RIGHT APPS";
+  const fullText = "SWIPE RIGHT NZ";
   const typingSpeed = 120; // ms per character
   
   
@@ -121,7 +121,7 @@ export default function HeroSection({ onTypingComplete }: HeroSectionProps) {
             <button
               onClick={() => {
                 const url = encodeURIComponent(window.location.href);
-                const text = encodeURIComponent('Check out ZIGZAG APPS - Amazing mobile and web applications by Henry Peti!');
+                const text = encodeURIComponent('Check out Swipe Right NZ - Amazing mobile and web applications by Henry Peti!');
                 window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank', 'noopener,noreferrer');
               }}
               className="bg-[#1877F2] text-white px-6 py-2 rounded-lg font-semibold text-sm hover:bg-[#166FE5] transition-colors flex items-center gap-2"

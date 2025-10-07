@@ -3,11 +3,11 @@ import { useEffect } from "react";
 export default function TermsOfService() {
   useEffect(() => {
     // SEO setup
-    document.title = "Terms of Service - ZIGZAG APPS | Henry Peti";
+    document.title = "Terms of Service - Swipe Right NZ | Henry Peti";
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Terms of Service for ZIGZAG APPS by Henry Peti. Read our terms and conditions for using our applications and services.');
+      metaDescription.setAttribute('content', 'Terms of Service for Swipe Right NZ by Henry Peti. Read our terms and conditions for using our applications and services.');
     }
   }, []);
 
@@ -18,7 +18,7 @@ export default function TermsOfService() {
         <nav className="container mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <a href="/" className="text-xl font-bold text-primary font-mono" data-testid="logo">
-              <span className="text-gradient">ZIGZAG APPS</span>
+              <span className="text-gradient">Swipe Right NZ</span>
             </a>
             <a href="/" className="text-muted-foreground hover:text-primary transition-colors" data-testid="back-home">
               ← Back to Home
@@ -41,7 +41,7 @@ export default function TermsOfService() {
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-foreground mb-4">Acceptance of Terms</h2>
               <p className="text-muted-foreground mb-4">
-                By accessing or using ZIGZAG APPS services, you agree to be bound by these Terms of Service. 
+                By accessing or using Swipe Right NZ services, you agree to be bound by these Terms of Service. 
                 If you do not agree to these terms, please do not use our services.
               </p>
             </section>
@@ -49,7 +49,7 @@ export default function TermsOfService() {
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-foreground mb-4">Services Description</h2>
               <p className="text-muted-foreground mb-4">
-                ZIGZAG APPS provides:
+                Swipe Right NZ provides:
               </p>
               <ul className="list-disc pl-6 text-muted-foreground space-y-2">
                 <li>Custom software development services</li>
@@ -91,7 +91,7 @@ export default function TermsOfService() {
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-foreground mb-4">Intellectual Property</h2>
               <p className="text-muted-foreground mb-4">
-                All content, code, and materials provided by ZIGZAG APPS are protected by intellectual property rights:
+                All content, code, and materials provided by Swipe Right NZ are protected by intellectual property rights:
               </p>
               <ul className="list-disc pl-6 text-muted-foreground space-y-2">
                 <li>Source code and applications remain the property of Henry Peti</li>
@@ -120,7 +120,7 @@ export default function TermsOfService() {
                 To the maximum extent permitted by law:
               </p>
               <ul className="list-disc pl-6 text-muted-foreground space-y-2">
-                <li>ZIGZAG APPS is not liable for indirect or consequential damages</li>
+                <li>Swipe Right NZ is not liable for indirect or consequential damages</li>
                 <li>Our liability is limited to the amount paid for services</li>
                 <li>Users assume responsibility for their use of our applications</li>
                 <li>We provide services "as is" without warranties</li>
