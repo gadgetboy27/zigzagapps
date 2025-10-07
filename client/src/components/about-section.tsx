@@ -18,7 +18,7 @@ export default function AboutSection() {
                 className="text-muted-foreground"
                 data-testid="about-description-1"
               >
-                I'm Henry Peti, a passionate software engineer and entrepreneur
+                My name is Henry, Iam a passionate software engineer and entrepreneur
                 with over 5 years of experience building innovative digital
                 solutions. My journey started in pre-COVID times, and I've
                 evolved with the rapidly changing tech landscape.

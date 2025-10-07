@@ -7,7 +7,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ onTypingComplete }: HeroSectionProps) {
   const [displayedText, setDisplayedText] = useState("");
-  const fullText = "SWIPE RIGHT NZ";
+  const fullText = "SWIPE RIGHT Apps";
   const typingSpeed = 120; // ms per character
   
   
