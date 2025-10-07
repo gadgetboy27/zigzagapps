@@ -10,8 +10,8 @@ import Testimonials from "@/components/testimonials";
 import ContactSection from "@/components/contact-section";
 import ThemeSelector from "@/components/theme-selector";
 import zigzagLogoTshirt from "@assets/logo-t-shirt-zig-zag_1758166586152.png";
-import zigzagLogoRedBlack from "@assets/swipe-right.png";
-import newDarkLogo from "@assets/swipe.png";
+import zigzagLogoRedBlack from "@assets/swipe.png";
+import newDarkLogo from "@assets/swipe-right.png";
 import { useTheme } from "@/contexts/theme-context";
 
 export default function Home() {
