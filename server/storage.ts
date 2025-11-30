@@ -110,8 +110,8 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-// DatabaseStorage disabled due to persistent Neon endpoint issue
-// export const storage = new DatabaseStorage();
+// Use DatabaseStorage for persistent data
+export const storage = new DatabaseStorage();
 
 // Working MemStorage - simple in-memory storage
 class MemStorage implements IStorage {
@@ -350,4 +350,4 @@ class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// export const storage = new MemStorage(); // Disabled - using DatabaseStorage instead
